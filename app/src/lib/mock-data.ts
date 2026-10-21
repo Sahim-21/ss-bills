@@ -234,19 +234,3 @@ export function toISODate(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
-export const MOCK_LICENSE = {
-  key: "SSB4-892A-K901-2026",
-  plan: "Yearly",
-  validUntil: "2027-03-31",
-  lastSyncAt: "2026-10-19T16:15:00+05:30",
-  pendingSummaries: 2,
-  graceDays: 7,
-  offlineDays: 2,
-};
-
-export const MOCK_BACKUPS = [
-  { file: "ssbills_2026-10-21_2345.db", at: "2026-10-21T23:45:00+05:30", sizeMb: 34.8, dest: "Local folder", auto: true },
-  { file: "ssbills_2026-10-20_2350.db", at: "2026-10-20T23:50:00+05:30", sizeMb: 34.2, dest: "USB drive", auto: false },
-  { file: "ssbills_2026-10-19_2340.db", at: "2026-10-19T23:40:00+05:30", sizeMb: 33.9, dest: "Local folder", auto: true },
-  { file: "ssbills_2026-10-18_2352.db", at: "2026-10-18T23:52:00+05:30", sizeMb: 33.5, dest: "Local folder", auto: true },
-];

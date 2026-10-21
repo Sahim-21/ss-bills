@@ -112,7 +112,7 @@ Priority: **P0** is required for the MVP, **P1** follows right after the MVP, an
 | S-2 | GST and tax settings | P0 | Rate, inclusive or exclusive pricing, HSN/SAC code |
 | S-3 | Receipt customization | P1 | Header and footer text, logo on or off, paper width |
 | S-4 | Staff accounts and roles | P0 | Admin and Cashier with PIN or password login |
-| S-5 | Data backup | P1 | Back up the local database file and restore it |
+| S-5 | Data backup | P1 | **Built** (D-035): manual and daily automatic, folder or USB, restore with safety copy |
 | S-6 | First-run setup wizard | P0 | Added 2026-10-21. Restaurant details, GST, first Admin and PIN, starter categories, table count. Built |
 | S-7 | Table management | P0 | Added 2026-10-21. Add, rename, change seats, remove (not while it has an open bill). Built |
 
@@ -120,9 +120,9 @@ Priority: **P0** is required for the MVP, **P1** follows right after the MVP, an
 
 | ID | Feature | Priority | Notes |
 |---|---|---|---|
-| L-1 | License key activation on first launch | P1 | Timing still open: see DECISIONS O-2 |
-| L-2 | Periodic license check with an offline grace period | P1 | The app locks only after the grace period expires |
-| L-3 | Daily summary upload to Supabase | P1 | Sales total, bill count, payment split, tax, top item |
+| L-1 | License key activation on first launch | P1 | **Built** (D-031 to D-033). Shown before the setup wizard |
+| L-2 | Periodic license check with an offline grace period | P1 | **Built.** The app locks new bills only after the grace period; history, reports, backup stay open |
+| L-3 | Daily summary upload to Supabase | P1 | **Built.** Sales total, bill count, payment split, tax, top item |
 | L-4 | Monthly view built from daily summaries | P1 | Computed centrally, not uploaded separately |
 
 ### 5.8 Vendor Console ("SS Bills Console"; separate web app, vendor team only)

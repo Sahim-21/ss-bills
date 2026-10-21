@@ -8,6 +8,7 @@ import { fmtDate, fmtDuration, fmtTime, initials, minutesSince, useNow, useOnlin
 import { formatINRShort } from "@/lib/money";
 import { usePos } from "@/lib/pos-store";
 import { ORDER_TYPE_LABEL } from "@/lib/types";
+import { useLicense } from "@/lib/license";
 import { Badge, Button, Drawer, EmptyState, Icon, cx } from "./ui";
 
 export function Logo({ size = 40 }: { size?: number }) {
@@ -106,6 +107,7 @@ function TopBar({ onOpenHeld }: { onOpenHeld: () => void }) {
   const now = useNow(15_000);
   const online = useOnline();
   const heldCount = state.held.length;
+  const { status: license } = useLicense();
 
   return (
     <header className="fixed left-[84px] right-0 top-0 z-40 flex h-16 items-center justify-between bg-surface/90 px-5 shadow-[0_1px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl">
@@ -132,6 +134,19 @@ function TopBar({ onOpenHeld }: { onOpenHeld: () => void }) {
           Held bills
           <span className="tnum rounded-full bg-primary px-2 py-0.5 text-label-sm text-white">{heldCount}</span>
         </button>
+        {license && license.mode !== "ok" && (
+          <Link
+            href="/settings/license/"
+            title={license.message}
+            className={cx(
+              "flex h-11 items-center gap-2 rounded-lg px-3 text-label-md",
+              license.mode === "locked" ? "bg-error text-white" : "bg-hold-surface text-hold-ink",
+            )}
+          >
+            <Icon name={license.mode === "locked" ? "lock" : "warning"} className="text-[20px]" />
+            {license.mode === "locked" ? "Billing paused" : license.reason === "offline" ? `Not synced ${license.offlineDays}d` : license.reason === "grace" ? "Licence expired" : "Licence expiring"}
+          </Link>
+        )}
         <div
           className={cx(
             "flex items-center gap-2 rounded-lg px-3 py-2 text-label-md",
@@ -227,10 +242,16 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { user, saveError, dismissSaveError } = usePos();
   const router = useRouter();
   const [heldOpen, setHeldOpen] = useState(false);
+  const { status: license } = useLicense();
 
   useEffect(() => {
     if (!user) router.replace("/");
   }, [user, router]);
+
+  // The "billing is paused" message goes away by itself once the licence is fine again.
+  useEffect(() => {
+    if (license?.mode === "ok" && saveError?.startsWith("Billing is paused")) dismissSaveError();
+  }, [license, saveError, dismissSaveError]);
   if (!user) return null;
 
   return (
@@ -244,7 +265,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         >
           <span className="flex items-center gap-2">
             <Icon name="error" className="icon-fill" />
-            A change could not be saved to this PC: {saveError}. Check the disk has free space, then retry the action.
+            {saveError.startsWith("Billing is paused")
+              ? saveError
+              : `A change could not be saved to this PC: ${saveError}. Check the disk has free space, then retry the action.`}
           </span>
           <button type="button" onClick={dismissSaveError} className="rounded-lg bg-white/20 px-3 py-1 hover:bg-white/30">
             Dismiss

@@ -16,7 +16,9 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
+import { ActivationScreen } from "@/components/activation";
 import { SetupWizard } from "@/components/setup-wizard";
+import type { LicenseStatus } from "@/lib/license";
 import type { SsbillsApi } from "./desktop";
 import { calcBill, financialYear, formatBillNo, type TaxSettings } from "./billing";
 import {
@@ -470,7 +472,11 @@ function PosStore({ initial, api, children }: { initial: State; api: SsbillsApi 
   return <PosContext.Provider value={value}>{children}</PosContext.Provider>;
 }
 
-type BootResult = { state: State; api: SsbillsApi | null } | { setup: SsbillsApi } | { error: string };
+type BootResult =
+  | { state: State; api: SsbillsApi | null }
+  | { setup: SsbillsApi }
+  | { activate: SsbillsApi; machineId?: string; message?: string }
+  | { error: string };
 
 /** Loads the database (desktop) or mock data (browser) before the app renders, and runs first-time setup. */
 function Boot({ children }: { children: ReactNode }) {
@@ -480,8 +486,13 @@ function Boot({ children }: { children: ReactNode }) {
   useEffect(() => {
     let alive = true;
     const api = window.ssbills ?? null;
+    // Desktop: the licence comes first (PRD L-1), then first-run setup, then the app.
     const load: Promise<BootResult> = api
-      ? loadFromDatabase(api).then((state) => (state ? { state, api } : { setup: api }))
+      ? api.license<LicenseStatus>("status").then(async (lic): Promise<BootResult> => {
+          if (lic.needsActivation) return { activate: api, machineId: lic.machineId, message: lic.reason === "damaged" ? lic.message : undefined };
+          const state = await loadFromDatabase(api);
+          return state ? { state, api } : { setup: api };
+        })
       : Promise.resolve({ state: mockInitialState(), api: null });
     load
       .then((r) => alive && setBoot(r))
@@ -501,6 +512,20 @@ function Boot({ children }: { children: ReactNode }) {
           <p className="mt-2 text-body-sm">Your data has not been changed. Restart the app, or contact SS Bills support.</p>
         </div>
       </div>
+    );
+  }
+  if ("activate" in boot) {
+    const api = boot.activate;
+    return (
+      <ActivationScreen
+        machineId={boot.machineId}
+        message={boot.message}
+        onActivate={async (key) => {
+          await api.license("activate", { key });
+          setBoot(null);
+          setAttempt((n) => n + 1);
+        }}
+      />
     );
   }
   if ("setup" in boot) {

@@ -19,6 +19,7 @@ project (owned by us) holds only restaurant licenses and daily sales summaries.
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Every decision made (and open questions) with reasons | Before changing direction |
 | [docs/UI_DESIGN.md](docs/UI_DESIGN.md) | UI/UX direction, Stitch AI prompts, screen checklist, what was left out | Before building any screen |
 | [supabase/README.md](supabase/README.md) | Central backend: tables, access rules, set-up steps | Before touching the database or the portal |
+| [docs/RELEASING.md](docs/RELEASING.md) | Building the installer, code signing, publishing updates, rollback | Before building or shipping a release |
 
 ## Rules for keeping context up to date (mandatory)
 
@@ -53,6 +54,8 @@ Run these from `app/`:
 | `npm run electron:dev` | The desktop app (Electron) on the dev server |
 | `npm run build` | Static export to `app/out/` |
 | `npm run electron:start` | Build, then run the production desktop app |
+| `npm run dist` | Build the Windows installer into `app/dist/` (see docs/RELEASING.md) |
+| `npm run dist:dir` | Build only the unpacked app (quick packaged-app test) |
 | `npm test` / `npm run lint` / `npm run typecheck` | Checks. All must pass before you finish |
 
 Sample-restaurant PINs (only if you pick the sample on the setup screen): Admin **1234**, Cashiers **1111** / **2222**.
@@ -65,6 +68,15 @@ in a plain browser has no database and uses throwaway mock data.
 paper copy must keep coming from that one file. Escape every piece of user text (`esc`). Printing goes through the Windows
 printer driver in `app/electron/print.cjs` (D-023). The renderer never chooses a file path for PDFs.
 
+**Licensing and backup (main process):** `app/electron/license*.cjs` (rules in `license-logic.cjs`), `backup.cjs`,
+`machine-id.cjs`; config in `app/electron/license-config.json` (project URL + the **public** signing key). A fresh install must
+be activated; set env `SSBILLS_LICENSE=off` to skip licence checks while developing or running old test scripts. `SSBILLS_API_URL`
+points the app at another server (tests use a fake one). `SSBILLS_BACKUP_DIR` overrides the backup folder. **Never change or
+regenerate the signing key pair once apps are installed** (D-031). The UI reaches these only through `window.ssbills.license` /
+`.backup`; it never supplies file paths or talks to the network.
+
+**Releases:** every release needs a higher `version` in `app/package.json`; a packaged app ignores `SSBILLS_LICENSE` / `SSBILLS_API_URL`; updates are checked from `updateUrl` in `license-config.json` and installed only when the app is closed. Read docs/RELEASING.md first.
+
 **Database rules:** the schema is in `app/electron/db/schema.cjs`. Never edit a released migration; add a new one.
 Bill numbers are assigned by the database, never by the UI. Changes to `electron/db/` need tests in `db.test.ts`.
 
@@ -76,7 +88,7 @@ Its backend is the SQL in `supabase/migrations/`. Run from `portal/`:
 | Command | What it does |
 |---|---|
 | `npm run dev` | Console at http://localhost:3100. With no `.env.local` it runs the **browser demo**: sign in with the pre-filled email, any password, code `123456` |
-| `npm test` | 64 tests: the migrations against a real Postgres (PGlite), the demo adapter, CSV. No Supabase needed |
+| `npm test` | 85 tests: the migrations and the Edge Function logic against a real Postgres (PGlite), the demo adapter, CSV. No Supabase needed |
 | `npm run typecheck` / `npm run lint` / `npm run build` | Checks and the static export (`portal/out/`) |
 
 **Rules for the vendor side:**
@@ -84,7 +96,7 @@ Its backend is the SQL in `supabase/migrations/`. Run from `portal/`:
 - Migrations are numbered and **never edited once applied to a real project**. Add a new one and a test in `portal/sql/`.
 - `npm run dev/build/test` copy the migrations into the demo bundle automatically, so the demo runs the same SQL as production.
 - New table? Enable row level security, add no policy, and expose access only through a function.
-- Setting up a real Supabase project is the owner's job; the steps are in `supabase/README.md`.
+- Setting up a real Supabase project is the owner's job; the steps are in `supabase/README.md`. The Edge Functions (`supabase/functions/`, shared logic in `_shared/handler.ts`, no Deno imports there so tests can run it) are deployed by the owner with the Supabase CLI; the private signing key lives only in `supabase/.secrets/` and as a Supabase secret, never in git.
 
 ## Working conventions
 

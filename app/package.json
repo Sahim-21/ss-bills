@@ -9,24 +9,28 @@
     "test": "vitest run",
     "typecheck": "next typegen && tsc --noEmit",
     "electron:dev": "concurrently -k -n next,electron -c yellow,cyan \"next dev\" \"wait-on http://localhost:3000 && electron . --dev\"",
-    "electron:start": "next build && electron ."
+    "electron:start": "next build && electron .",
+    "dist": "next build && electron-builder --win --x64",
+    "dist:dir": "next build && electron-builder --win --x64 --dir"
   },
   "dependencies": {
-    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
-    "material-symbols": "^0.48.1",
-    "next": "16.4.2",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "electron-updater": "^6.8.9"
   },
   "devDependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^24.19.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "concurrently": "^10.0.6",
     "electron": "^45.0.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
+    "material-symbols": "^0.48.1",
+    "next": "16.4.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.0.5",
@@ -35,6 +39,48 @@
   "allowScripts": {
     "electron@45.0.0": true
   },
-  "description": "SS Bills — offline-first restaurant billing",
-  "main": "electron/main.cjs"
+  "description": "SS Bills \u00e2\u20ac\u201d offline-first restaurant billing",
+  "main": "electron/main.cjs",
+  "build": {
+    "appId": "in.ssbills.pos",
+    "productName": "SS Bills",
+    "copyright": "SS Bills",
+    "asar": false,
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "files": [
+      "electron/**/*",
+      "!electron/**/*.test.ts",
+      "out/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "SS Bills",
+      "deleteAppDataOnUninstall": false
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://updates.invalid/ss-bills/"
+      }
+    ]
+  }
 }

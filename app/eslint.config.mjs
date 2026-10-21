@@ -7,7 +7,7 @@ const eslintConfig = defineConfig([
   ...nextTs,
   // The Electron main process is plain CommonJS.
   {
-    files: ["electron/**/*.cjs"],
+    files: ["electron/**/*.cjs", "scripts/**/*.cjs"],
     rules: { "@typescript-eslint/no-require-imports": "off" },
   },
   // Override default ignores of eslint-config-next.
@@ -16,6 +16,7 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "dist/**", // installer output (electron-builder)
     "next-env.d.ts",
   ]),
 ]);

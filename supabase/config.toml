@@ -1,0 +1,9 @@
+# Supabase CLI settings. Only what the Edge Functions need.
+# The restaurant apps have no Supabase login, so the platform's JWT check is off for these two functions.
+# They are protected instead by: the license key + machine ID (checked in the database), rate limits,
+# and request-size limits (supabase/functions/_shared).
+[functions.activate]
+verify_jwt = false
+
+[functions.sync]
+verify_jwt = false

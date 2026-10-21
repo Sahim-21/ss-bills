@@ -14,6 +14,21 @@ contextBridge.exposeInMainWorld("ssbills", {
     ipcRenderer.invoke("print", name, arg).catch((e) => {
       throw clean(e);
     }),
+  /** app("info") -> { version, update: { state, version, message } }. See electron/updates.cjs. */
+  app: (name) =>
+    ipcRenderer.invoke("app", name).catch((e) => {
+      throw clean(e);
+    }),
+  /** license("status" | "activate" | "syncNow", arg). See electron/license.cjs. */
+  license: (name, arg) =>
+    ipcRenderer.invoke("license", name, arg).catch((e) => {
+      throw clean(e);
+    }),
+  /** backup("status" | "now" | "setAuto" | "chooseFolder" | "restore" | "restoreFromFile", arg). See electron/backup.cjs. */
+  backup: (name, arg) =>
+    ipcRenderer.invoke("backup", name, arg).catch((e) => {
+      throw clean(e);
+    }),
   /** call("payBill", payload) -> result. Rejects with the database's error message. */
   call: (name, arg) =>
     ipcRenderer.invoke("db", name, arg).catch((e) => {

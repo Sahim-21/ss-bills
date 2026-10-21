@@ -46,6 +46,7 @@ export function createApi(rpc: RpcFn, auth: PortalAuth, mode: "supabase" | "demo
         p_amount_paise: r.amount_paise ?? null, p_reactivate: r.reactivate ?? false,
       }),
     suspend: (id: string, reason: string) => call<{ ok: true }>("vendor_suspend", { p_restaurant: id, p_reason: reason }),
+    regenerateKey: (id: string, reason: string) => call<{ ok: true; license_key: string }>("vendor_regenerate_key", { p_restaurant: id, p_reason: reason }),
     reactivate: (id: string, note = "") => call<{ ok: true }>("vendor_reactivate", { p_restaurant: id, p_note: note }),
     resetDevice: (deviceId: string, reason: string) => call<{ ok: true }>("vendor_reset_device", { p_device: deviceId, p_reason: reason }),
     updatePlan: (p: Partial<Plan> & { id: string }) => call<{ ok: true }>("vendor_update_plan", { p }),

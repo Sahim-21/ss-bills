@@ -18,7 +18,7 @@ export type Plan = {
 
 export type EventType =
   | "created" | "updated" | "renewed" | "suspended" | "reactivated" | "device_bound" | "device_reset"
-  | "activated" | "plan_updated" | "admin_added" | "admin_removed";
+  | "activated" | "plan_updated" | "admin_added" | "admin_removed" | "key_regenerated";
 
 export type EventRow = {
   id: number;

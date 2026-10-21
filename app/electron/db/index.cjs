@@ -3,10 +3,12 @@
 // the UI reaches it through the IPC bridge in electron/preload.cjs.
 const { DatabaseSync } = require("node:sqlite");
 const crypto = require("node:crypto");
+const fs = require("node:fs");
 const { MIGRATIONS } = require("./schema.cjs");
 
 const BILL_PREFIX = "SSB";
 const METHODS = ["cash", "upi", "card"];
+const PIN_FREE_TRIES = 5;
 const ORDER_TYPES = ["dine_in", "takeaway", "delivery"];
 
 /** Open (and create/upgrade) the database at `file`. Pass ":memory:" for tests. */
@@ -18,12 +20,27 @@ function openDatabase(file) {
     // FULL: a committed bill survives a power cut. Billing volume is low, so the cost is invisible.
     db.exec("PRAGMA synchronous = FULL");
   }
-  migrate(db);
+  try {
+    migrate(db, file);
+  } catch (e) {
+    db.close(); // never leave a half-opened database behind
+    throw e;
+  }
   return db;
 }
 
-function migrate(db) {
+function migrate(db, file) {
   const current = db.prepare("PRAGMA user_version").get().user_version;
+  // A database written by a NEWER version of the app must never be opened by an older one (for example after
+  // an update is rolled back): it could silently corrupt data it does not understand.
+  if (current > MIGRATIONS.length) {
+    throw new Error("This data was saved by a newer version of SS Bills. Install the latest version of the app to open it.");
+  }
+  // Before an update changes an existing database, keep a copy of it (one per old version, next to the database).
+  if (current > 0 && current < MIGRATIONS.length && file && file !== ":memory:") {
+    const copy = `${file}.before-v${current + 1}.bak`;
+    if (!fs.existsSync(copy)) db.exec(`VACUUM INTO '${copy.replace(/'/g, "''")}'`);
+  }
   for (let v = current; v < MIGRATIONS.length; v++) {
     db.exec("BEGIN");
     try {
@@ -64,7 +81,9 @@ function assert(cond, msg) {
 
 const isPaise = (n) => Number.isInteger(n) && n >= 0;
 
-function createRepo(db) {
+/** `opts.now` (ms) is injectable so tests can move the clock. */
+function createRepo(db, opts = {}) {
+  const nowMs = opts.now ?? (() => Date.now());
   /** Run `fn` in an immediate transaction. Not re-entrant: repo methods never call each other's tx. */
   function tx(fn) {
     db.exec("BEGIN IMMEDIATE");
@@ -205,6 +224,19 @@ function createRepo(db) {
     // Never leave the restaurant without an active admin.
     const admins = q("SELECT COUNT(*) AS n FROM users WHERE role='admin' AND active=1").get().n;
     assert(admins > 0, "At least one active Admin is required");
+  }
+
+  function readJson(key, fallback) {
+    try {
+      const row = q("SELECT value FROM app_meta WHERE key = ?").get(key);
+      return row ? { ...fallback, ...JSON.parse(row.value) } : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function writeJson(key, value) {
+    q("INSERT INTO app_meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(key, JSON.stringify(value));
   }
 
   /** Which Windows printers to use. null means "ask every time" (the system print dialog). */
@@ -470,9 +502,62 @@ function createRepo(db) {
       });
     },
 
+    /**
+     * Checks a PIN. After PIN_FREE_TRIES wrong tries in a row the user is locked out for a growing
+     * time (1, 2, 4, 8, then 15 minutes), so a 4-digit PIN cannot be guessed at the keyboard.
+     * A correct PIN clears the count. The count is saved, so restarting the app does not reset it.
+     */
     verifyPin({ id, pin }) {
+      const failKey = `pin_fail_${id}`;
+      const fail = readJson(failKey, { n: 0, until: 0 });
+      const now = nowMs();
+      if (fail.until > now) {
+        const mins = Math.ceil((fail.until - now) / 60_000);
+        throw new Error(`Too many wrong PINs. Try again in ${mins} minute${mins === 1 ? "" : "s"}`);
+      }
       const u = q("SELECT pin_hash, active FROM users WHERE id = ?").get(id);
-      return !!u && !!u.active && checkPin(pin, u.pin_hash);
+      const ok = !!u && !!u.active && checkPin(pin, u.pin_hash);
+      if (ok) {
+        if (fail.n > 0) q("DELETE FROM app_meta WHERE key = ?").run(failKey);
+        return true;
+      }
+      if (u) {
+        const n = fail.n + 1;
+        const until = n >= PIN_FREE_TRIES ? now + Math.min(15, 2 ** (n - PIN_FREE_TRIES)) * 60_000 : 0;
+        writeJson(failKey, { n, until });
+      }
+      return false;
+    },
+
+    /**
+     * Daily totals for the licence sync, from `sinceDate` (inclusive) on, with each day's best-selling item.
+     * Cancelled-only days are included (they carry the cancelled count).
+     */
+    summariesSince(sinceDate) {
+      const days = q("SELECT * FROM daily_summary WHERE date >= ? ORDER BY date DESC LIMIT 400").all(sinceDate).reverse();
+      const tops = new Map();
+      for (const r of q(
+        `SELECT b.paid_date AS date, bi.item_name AS name, SUM(bi.qty) AS qty
+         FROM bill_items bi JOIN bills b ON b.id = bi.bill_id
+         WHERE b.status = 'paid' AND b.paid_date >= ?
+         GROUP BY b.paid_date, bi.item_name ORDER BY b.paid_date, qty DESC, bi.item_name`,
+      ).all(sinceDate)) {
+        if (!tops.has(r.date)) tops.set(r.date, r);
+      }
+      return days.map((d) => ({
+        date: d.date, salesPaise: d.sales_paise, bills: d.bills, cancelled: d.cancelled,
+        cashPaise: d.cash_paise, upiPaise: d.upi_paise, cardPaise: d.card_paise, taxPaise: d.tax_paise,
+        topItemName: tops.get(d.date)?.name ?? null, topItemQty: tops.get(d.date)?.qty ?? null,
+      }));
+    },
+
+    /** Small settings store for the main process (licence, backups). NOT reachable from the UI (see main.cjs). */
+    getMeta(key) {
+      return q("SELECT value FROM app_meta WHERE key = ?").get(key)?.value ?? null;
+    },
+    setMeta(key, value) {
+      if (value === null) q("DELETE FROM app_meta WHERE key = ?").run(key);
+      else q("INSERT INTO app_meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(key, String(value));
     },
 
     /** Used by tests and the future summary sync. */

@@ -4,6 +4,12 @@ export interface SsbillsApi {
   isDesktop: true;
   /** Calls a database method in the main process. Rejects with the database's error message. */
   call<T = unknown>(name: string, arg?: unknown): Promise<T>;
+  /** Installed version and update state (electron/updates.cjs). */
+  app<T = unknown>(name: "info"): Promise<T>;
+  /** Licence status, activation and sync (electron/license.cjs). */
+  license<T = unknown>(name: "status" | "activate" | "syncNow", arg?: unknown): Promise<T>;
+  /** Backup and restore (electron/backup.cjs). */
+  backup<T = unknown>(name: "status" | "now" | "setAuto" | "chooseFolder" | "restore" | "restoreFromFile", arg?: unknown): Promise<T>;
   /** Printing through the Windows printer driver (electron/print.cjs). */
   print<T = unknown>(name: "listPrinters" | "printHtml" | "savePdf", arg?: unknown): Promise<T>;
 }

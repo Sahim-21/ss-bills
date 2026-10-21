@@ -555,6 +555,70 @@ describe("lists and reports", () => {
   });
 });
 
+describe("regenerating a licence key", () => {
+  const regen = (id: string, reason = "Key was posted in a group chat", who: Who = boss) =>
+    rpc<any>(db, who, "public.vendor_regenerate_key($1, $2)", [id, reason]);
+
+  it("gives a new key and the old one stops working at once", async () => {
+    const c = await create();
+    await activate(c.license_key, "PC-1");
+    const r = await regen(c.restaurant_id);
+    expect(r.license_key).toMatch(KEY);
+    expect(r.license_key).not.toBe(c.license_key);
+    expect(await activate(c.license_key, "PC-2")).toMatchObject({ ok: false, code: "invalid_key" });
+    expect((await checkin(c.license_key, "PC-1")).code).toBe("invalid_key");
+    expect((await rpc<any>(db, boss, "public.vendor_client($1)", [c.restaurant_id])).license.license_key).toBe(r.license_key);
+  });
+
+  it("a PC that was already linked re-activates with the new key without using a slot", async () => {
+    const c = await create({ plan_id: "monthly" }); // 1 terminal
+    expect((await activate(c.license_key, "PC-1")).ok).toBe(true);
+    const r = await regen(c.restaurant_id);
+    const again = await activate(r.license_key, "PC-1");
+    expect(again).toMatchObject({ ok: true, devices_used: 1 });
+    expect((await checkin(r.license_key, "PC-1")).ok).toBe(true);
+    // a different PC is still refused: the single terminal slot is taken
+    expect(await activate(r.license_key, "PC-2")).toMatchObject({ ok: false, code: "device_limit" });
+  });
+
+  it("keeps the licence's plan, dates and uploaded sales", async () => {
+    const c = await create();
+    await activate(c.license_key, "PC-1");
+    await checkin(c.license_key, "PC-1", [summary(0, 50000)]);
+    const before = (await rpc<any>(db, boss, "public.vendor_client($1)", [c.restaurant_id])).license;
+    await regen(c.restaurant_id);
+    const after = await rpc<any>(db, boss, "public.vendor_client($1)", [c.restaurant_id]);
+    expect(after.license).toMatchObject({ plan_id: before.plan_id, expires_at: before.expires_at, state: before.state });
+    expect(after.summaries).toHaveLength(1);
+    expect(after.devices).toHaveLength(1);
+  });
+
+  it("is for super admins only, and needs a reason", async () => {
+    const c = await create();
+    await expect(regen(c.restaurant_id, "x", help)).rejects.toThrow(/super admin/);
+    await expect(regen(c.restaurant_id, "x", nobody)).rejects.toThrow(/super admin/);
+    await expect(rpc(db, anon, "public.vendor_regenerate_key($1, 'x')", [c.restaurant_id])).rejects.toThrow(/permission denied/i);
+    await expect(rpc(db, service, "public.vendor_regenerate_key($1, 'x')", [c.restaurant_id])).rejects.toThrow(/permission denied/i);
+    await expect(regen(c.restaurant_id, "  ")).rejects.toThrow(/reason is required/i);
+    await expect(regen("00000000-0000-0000-0000-000000000000")).rejects.toThrow(/not found/i);
+    const weak: Who = { role: "authenticated", uid: bossId, aal: "aal1" };
+    await expect(regen(c.restaurant_id, "x", weak)).rejects.toThrow(/super admin/);
+    // nothing changed
+    expect((await rpc<any>(db, boss, "public.vendor_client($1)", [c.restaurant_id])).license.license_key).toBe(c.license_key);
+  });
+
+  it("is logged without ever storing a whole key", async () => {
+    const c = await create();
+    const r = await regen(c.restaurant_id, "Leaked");
+    const [ev] = await q("select reason, actor_name, payload from public.license_events where event = 'key_regenerated'");
+    expect(ev).toMatchObject({ reason: "Leaked", actor_name: "Rajesh Verma" });
+    expect(ev.payload).toEqual({ old_tail: c.license_key.slice(-4), new_tail: r.license_key.slice(-4) });
+    const all = JSON.stringify(await q("select * from public.license_events"));
+    expect(all).not.toContain(c.license_key);
+    expect(all).not.toContain(r.license_key);
+  });
+});
+
 describe("editing clients, plans and the team", () => {
   it("updates only the fields sent, validates them, and logs what changed", async () => {
     const c = await create();

@@ -408,6 +408,64 @@ describe("upgrading an existing database", () => {
   });
 });
 
+describe("updates and the database", () => {
+  const { MIGRATIONS } = require("./schema.cjs");
+  const { DatabaseSync } = require("node:sqlite");
+  const tmp = () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ssbills-upd-"));
+    return { dir, file: path.join(dir, "ssbills.db"), done: () => fs.rmSync(dir, { recursive: true, force: true }) };
+  };
+
+  it("keeps a copy of an existing database before an update changes it", () => {
+    const t = tmp();
+    try {
+      const old = new DatabaseSync(t.file);
+      old.exec(MIGRATIONS[0]);
+      old.exec("PRAGMA user_version = 1");
+      old.exec("INSERT INTO categories (id, name, sort_order) VALUES ('c1','Mains',1)");
+      old.close();
+      const db = openDatabase(t.file);
+      openDbs.push(db);
+      const copy = `${t.file}.before-v2.bak`;
+      expect(fs.existsSync(copy)).toBe(true);
+      const bak = new DatabaseSync(copy, { readOnly: true });
+      expect(bak.prepare("PRAGMA user_version").get().user_version).toBe(1); // exactly as it was
+      expect(bak.prepare("SELECT COUNT(*) AS n FROM categories").get().n).toBe(1);
+      bak.close();
+    } finally {
+      for (const d of openDbs.splice(0)) d.close();
+      t.done();
+    }
+  });
+
+  it("makes no copy for a brand-new database or one that is already up to date", () => {
+    const t = tmp();
+    try {
+      openDatabase(t.file).close(); // new
+      openDatabase(t.file).close(); // current
+      expect(fs.readdirSync(t.dir).filter((f) => f.endsWith(".bak"))).toEqual([]);
+    } finally {
+      t.done();
+    }
+  });
+
+  it("refuses a database saved by a newer version, and leaves it untouched", () => {
+    const t = tmp();
+    try {
+      openDatabase(t.file).close();
+      const d = new DatabaseSync(t.file);
+      d.exec(`PRAGMA user_version = ${MIGRATIONS.length + 1}`);
+      d.close();
+      expect(() => openDatabase(t.file)).toThrow(/newer version of SS Bills/);
+      const again = new DatabaseSync(t.file, { readOnly: true });
+      expect(again.prepare("PRAGMA user_version").get().user_version).toBe(MIGRATIONS.length + 1);
+      again.close();
+    } finally {
+      t.done();
+    }
+  });
+});
+
 describe("printer settings", () => {
   it("defaults to 'ask every time' and remembers the choice", () => {
     const { repo } = fresh();
@@ -424,5 +482,111 @@ describe("printer settings", () => {
     expect(() => repo.setPrinters({ receipt: "", kot: null })).toThrow(/printer/);
     expect(() => repo.setPrinters({ receipt: "x".repeat(300), kot: null })).toThrow(/printer/);
     expect(() => repo.setPrinters(null)).toThrow(/printer/);
+  });
+});
+
+describe("PIN lockout", () => {
+  function withClock() {
+    let t = Date.parse("2026-10-21T10:00:00Z");
+    const db = openDatabase(":memory:");
+    openDbs.push(db);
+    const repo = createRepo(db, { now: () => t });
+    repo.seedDemo(demo());
+    return { repo, advance: (ms: number) => (t += ms) };
+  }
+  const bad = (repo: ReturnType<typeof createRepo>, id = "s2") => repo.verifyPin({ id, pin: "0000" });
+
+  it("locks a user for a minute after 5 wrong PINs, even for the right PIN", () => {
+    const { repo, advance } = withClock();
+    for (let i = 0; i < 5; i++) expect(bad(repo)).toBe(false);
+    expect(() => repo.verifyPin({ id: "s2", pin: "1111" })).toThrow(/Try again in 1 minute$/);
+    advance(61_000);
+    expect(repo.verifyPin({ id: "s2", pin: "1111" })).toBe(true);
+  });
+
+  it("locks longer after each further failure, up to 15 minutes", () => {
+    const { repo, advance } = withClock();
+    for (let i = 0; i < 5; i++) bad(repo);
+    advance(61_000);
+    bad(repo); // 6th failure: 2 minutes
+    expect(() => bad(repo)).toThrow(/2 minutes/);
+    advance(121_000);
+    bad(repo); // 7th: 4
+    advance(4 * 60_000 + 1000);
+    bad(repo); // 8th: 8
+    advance(8 * 60_000 + 1000);
+    bad(repo); // 9th: 15 (capped)
+    expect(() => bad(repo)).toThrow(/15 minutes/);
+    advance(15 * 60_000 + 1000);
+    bad(repo); // 10th: still 15
+    expect(() => bad(repo)).toThrow(/15 minutes/);
+  });
+
+  it("a correct PIN clears the count", () => {
+    const { repo } = withClock();
+    for (let i = 0; i < 4; i++) bad(repo);
+    expect(repo.verifyPin({ id: "s2", pin: "1111" })).toBe(true);
+    for (let i = 0; i < 4; i++) bad(repo); // would be locked if the count had not been cleared
+    expect(repo.verifyPin({ id: "s2", pin: "1111" })).toBe(true);
+  });
+
+  it("locks per user, not for everyone", () => {
+    const { repo } = withClock();
+    for (let i = 0; i < 5; i++) bad(repo, "s2");
+    expect(() => repo.verifyPin({ id: "s2", pin: "1111" })).toThrow(/Too many/);
+    expect(repo.verifyPin({ id: "s1", pin: "1234" })).toBe(true);
+  });
+
+  it("survives a restart (the count is saved)", () => {
+    const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "ssb-pin-")), "t.db");
+    const t = Date.parse("2026-10-21T10:00:00Z");
+    let db = openDatabase(file);
+    let repo = createRepo(db, { now: () => t });
+    repo.seedDemo(demo());
+    for (let i = 0; i < 5; i++) bad(repo);
+    db.close();
+    db = openDatabase(file);
+    repo = createRepo(db, { now: () => t });
+    openDbs.push(db);
+    expect(() => repo.verifyPin({ id: "s2", pin: "1111" })).toThrow(/Too many/);
+  });
+
+  it("does not track unknown user ids", () => {
+    const { repo } = withClock();
+    for (let i = 0; i < 10; i++) expect(repo.verifyPin({ id: "ghost", pin: "1" })).toBe(false);
+    expect(repo.getMeta("pin_fail_ghost")).toBeNull();
+  });
+});
+
+describe("summaries for the licence sync", () => {
+  it("returns daily totals from a date on, with each day's best-selling item", () => {
+    const { repo } = fresh();
+    repo.payBill(payment("b1")); // 2 Paneer + 3 Naan on 2026-10-21
+    repo.payBill(payment("b2", { lines: [line("m2", "Naan", 5000, 4)], totals: { subtotal: 20000, serviceCharge: 0, cgst: 500, sgst: 500, roundOff: 0, total: 21000 } }));
+    repo.payBill(payment("b3", { paidDate: "2026-10-22", paidAt: "2026-10-22T10:00:00.000Z" }));
+    const all = repo.summariesSince("2000-01-01");
+    expect(all.map((d: { date: string }) => d.date)).toEqual(["2026-10-21", "2026-10-22"]);
+    expect(all[0]).toMatchObject({ bills: 2, salesPaise: 91400, topItemName: "Naan", topItemQty: 7 });
+    expect(all[1]).toMatchObject({ bills: 1, topItemName: "Naan", topItemQty: 3 });
+    expect(repo.summariesSince("2026-10-22")).toHaveLength(1);
+    expect(repo.summariesSince("2026-10-23")).toEqual([]);
+  });
+
+  it("has no top item on a day with only cancelled bills, and counts the cancellation", () => {
+    const { repo } = fresh();
+    repo.payBill(payment("b1"));
+    repo.cancelBill({ id: "b1", reason: "Duplicate", by: "s1", at: "2026-10-21T11:00:00.000Z" });
+    expect(repo.summariesSince("2026-10-21")).toEqual([
+      expect.objectContaining({ bills: 0, cancelled: 1, salesPaise: 0, topItemName: null, topItemQty: null }),
+    ]);
+  });
+
+  it("the meta store round-trips and deletes", () => {
+    const { repo } = fresh();
+    expect(repo.getMeta("x")).toBeNull();
+    repo.setMeta("x", 5);
+    expect(repo.getMeta("x")).toBe("5");
+    repo.setMeta("x", null);
+    expect(repo.getMeta("x")).toBeNull();
   });
 });

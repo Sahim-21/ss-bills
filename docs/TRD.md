@@ -268,16 +268,37 @@ app can lock or warn.
 **Renew:** `vendor_renew` records the payment and extends from the later of the old expiry and now. **Suspend /
 reactivate / reset terminal** need a reason where it matters and write an audit event.
 
-**Offline grace and lock on the restaurant side** (7 days offline, block new bills afterwards, keep history/backup)
-are specified in §7.4 and **not built yet**.
+**Replace a licence key:** `vendor_regenerate_key(restaurant, reason)` (super admin, migration 7, D-037). The old key is invalid at once (activation and check-in look up
+licences by key); linked PCs stay bound by machine ID and re-activate with the new key without using a slot. Logged as `key_regenerated` with only the last 4 characters of each key.
 
-### 7.4 Restaurant app behaviour (to build)
+**Edge Functions** (`supabase/functions/activate`, `sync`; shared code in `_shared/`): validate the request, rate-limit
+(`rate_limit_hit`, migration 6: activate 20 per 10 min per IP; sync 300 per hour per IP and 60 per hour per key+PC), call
+`license_activate` / `license_checkin` with the service role, and return `{ ok, payload, sig }`. `payload` is a JSON string
+of the status; `sig` is its Ed25519 signature (D-031). Refusals are `{ ok:false, code, message }` with HTTP 404/403/409/400/429;
+database errors are never passed on. `verify_jwt = false` (D-032, `supabase/config.toml`).
 
-- Activation screen calls the Edge Function; stores the key, machine ID and last good status in `app_meta`.
-- A sync worker uploads `daily_summary` rows (already maintained locally, TRD §3) and refreshes status once a day when online.
-- If the app cannot reach the server for more than `grace_days` since the last good check-in, or the server says
-  `suspended`/`expired` past grace, it settles open bills, then blocks **new** bills. History, reports and backup stay available.
-- A suspension only takes effect at the next successful check-in.
+**Offline grace and lock on the restaurant side** are built (§7.4).
+
+### 7.4 Restaurant app behaviour (built, D-031 to D-033)
+
+All in the Electron main process; the UI sees only `window.ssbills.license(...)`.
+
+- `electron/license-config.json` holds the project URL and the **public** signing key. Env `SSBILLS_API_URL` overrides the URL;
+  `SSBILLS_LICENSE=off` switches checks off for development.
+- `electron/machine-id.cjs`: hash of the Windows machine GUID (random id saved in `app_meta` elsewhere).
+- `electron/license.cjs`: `activate(key)`, `syncNow()`, `getStatus()`, `assertCanBill()`. The key, the last signed answer and
+  times live in `app_meta`. The saved answer is **re-verified on every read**, so editing the file or copying it to another PC
+  makes it invalid. A background tick (first 10 s after start, then every 15 min) syncs when 6 h have passed since the last
+  good check-in, or 15 min after a failure. Sync uploads `daily_summary` rows (first time all; later from 2 days before the
+  last uploaded day, because late payments and cancellations change recent days) with each day's best-selling item.
+- `electron/license-logic.cjs` (pure, tested): status = `ok` / `warning` / `locked`. Locked when: never activated or the saved
+  answer is damaged (shows the **activation screen**, before the setup wizard); the server says `suspended`; expired past
+  `grace_days`; no good check-in for more than `grace_days`; the server says `device_not_bound` / `invalid_key` (shows
+  "Activate again" in Settings, history still open). Warnings: offline 1-7 days, in grace after expiry, expiring soon.
+  Time never runs backwards past the latest time seen.
+- `main.cjs` refuses `saveOpenBill` and `payBill` while locked; everything else (history, reports, backup, settings) stays open.
+  A suspension takes effect at the next successful check-in.
+- UI: `components/activation.tsx`, Settings → License & sync, a top-bar chip when not OK, and the "Billing is paused" banner.
 
 ### 7.5 Vendor Console (`portal/`)
 
@@ -295,17 +316,44 @@ are specified in §7.4 and **not built yet**.
 - The app never contains the `service_role` key. The console only ever holds the anon key.
 - Device-supplied text (item names, device names) is length-limited and only ever shown as text.
 - CSV exports prefix cells starting with `= + - @` so a spreadsheet cannot run them as formulas.
-- Known gaps: no rate limit on activation attempts (add one in the Edge Function); the machine ID deters casual copying
-  but is not tamper-proof; TOTP enrolment/verification is written against Supabase's API but untested without a project.
+- The licence key is 64 bits (16 hex characters) and activation is rate-limited per IP, so guessing is impractical.
+- Known gaps: the machine ID and the local "last check-in" time deter casual copying and clock tricks but are not
+  tamper-proof against a determined user with file access; TOTP enrolment/verification is written against Supabase's API
+  but untested without a real sign-in; no way yet to issue a replacement licence key (regenerate) from the console.
 
 ## 8. Backup (local data)
 
-- Manual: Admin chooses "Backup", which copies a consistent snapshot of `ssbills.db`
-  (SQLite backup API) to a folder or USB drive. Restore replaces the DB after confirmation.
-- Automatic: a daily snapshot goes to a local backups folder, and the last N copies are kept.
+Built (D-035), in `electron/backup.cjs`; the UI is Settings → Backup & restore.
+
+- Manual: "Back up now" writes a consistent snapshot (`VACUUM INTO`, safe while the app runs) named
+  `ssbills_YYYY-MM-DD_HHMMSS.db` to the backup folder (default `Documents\SS Bills Backups`, changeable in a system folder
+  dialog, so a USB drive works; env `SSBILLS_BACKUP_DIR` overrides it, and next to a test database by default).
+- Automatic: once a day while the app is open (checked hourly), file suffix `_auto`; the newest 30 are kept. Manual and
+  `_pre-restore` copies are never deleted. Turn off with the toggle (`backup_auto` in `app_meta`).
+- Restore (from the list, or "Restore from a file…" via an open dialog): the file must pass `PRAGMA integrity_check`, contain
+  the SS Bills tables, and not be newer than this app's schema. Then today's data is saved as `…_pre-restore.db`, the database is
+  closed, the file is copied over the live one (temporary name, then rename; stale WAL files removed) and the app restarts.
+  The UI only ever names listed files (strict name pattern); it never supplies a path.
 - Off-site backup of the full database (the client's Google Drive, or our storage) is
   **(PENDING)** O-4.
 - The central `daily_summary` table is **not** a backup and can't restore bills.
+
+## 10. Packaging, signing and updates (built, D-038, D-039)
+
+Details and the release checklist are in [RELEASING.md](RELEASING.md).
+
+- `npm run dist` (in `app/`) runs `next build` then electron-builder (`package.json` → `build`): NSIS installer for Windows x64, per-user,
+  choosable folder, Start menu and Desktop shortcuts, `asar` off, files = `electron/**` (no tests) + `out/**`. Output in `app/dist/`
+  (git-ignored): `SS Bills Setup X.Y.Z.exe`, `.blockmap`, `latest.yml`. `npm run dist:dir` makes only the unpacked app for quick tests.
+- The icon is `app/assets/icon.png` and `icon.ico`, made by `app/scripts/make-icon.cjs` (run with Electron; the PNG-compressed ICO is written by hand, no image tool).
+- A packaged app (`app.isPackaged`) enforces licensing and ignores `SSBILLS_LICENSE` / `SSBILLS_API_URL` (D-036). `SSBILLS_DB` still works (used by tests).
+- Signing: electron-builder signs when `CSC_LINK` / `CSC_KEY_PASSWORD` (or Azure Trusted Signing options) are present. Unsigned builds work but SmartScreen warns.
+- `electron/updates.cjs` wraps electron-updater (generic provider, feed = `updateUrl` in `license-config.json`): `autoDownload`, install on quit only,
+  no downgrade, check 60 s after start then every 6 h, all failures swallowed and shown on Settings → License & sync. Disabled when unpackaged or `updateUrl` is empty.
+- Database safety on update (`electron/db/index.cjs`): a copy `ssbills.db.before-vN.bak` (one per old version, `VACUUM INTO`) before migrations run on an existing database;
+  a database with a higher `user_version` than the app knows is refused with a clear message (a dialog at start-up); a failed open closes the handle.
+- Window hardening (`main.cjs`): navigation away from the app's own pages is blocked, new windows are denied (external links go to the browser), every permission
+  request (camera, location, notifications, ...) is refused. Still missing: a Content-Security-Policy.
 
 ## 9. Folder layout
 

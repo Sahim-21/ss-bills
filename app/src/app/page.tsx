@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useEffectEvent, useState } from "react";
 import { Logo, RoleBadge, StaffAvatar } from "@/components/shell";
@@ -20,6 +19,7 @@ export default function LoginPage() {
   const [selectedId, setSelectedId] = useState(active.find((s) => s.role === "cashier")?.id ?? active[0]?.id);
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const selected = active.find((s) => s.id === selectedId);
 
   const todays = state.paid.filter((b) => b.status === "paid" && isSameDay(b.paidAt, now));
@@ -28,7 +28,11 @@ export default function LoginPage() {
 
   const submit = async (value: string) => {
     if (!selected) return;
-    const ok = await verifyPin(selected.id, value).catch(() => false);
+    setErrorMsg(null);
+    const ok = await verifyPin(selected.id, value).catch((e: unknown) => {
+      setErrorMsg(e instanceof Error ? e.message : null); // "Too many wrong PINs. Try again in N minutes"
+      return false;
+    });
     if (ok) {
       dispatch({ type: "login", userId: selected.id });
       router.push("/billing/");
@@ -76,13 +80,6 @@ export default function LoginPage() {
               {online ? "ONLINE" : "OFFLINE"}
             </span>
           </div>
-          <Link
-            href="/activate/"
-            className="flex h-11 items-center gap-2 rounded-lg px-3 text-label-md text-muted hover:bg-surface-high"
-            title="First-launch license activation (preview)"
-          >
-            <Icon name="key" className="text-[20px]" /> License
-          </Link>
         </div>
       </header>
 
@@ -182,7 +179,7 @@ export default function LoginPage() {
                 ))}
               </div>
               <div className={cx("mt-3 h-5 text-body-md", error ? "text-error" : "text-muted")}>
-                {error ? "Wrong PIN. Try again." : "Unlocks automatically after the last digit"}
+                {error ? (errorMsg ?? "Wrong PIN. Try again.") : "Unlocks automatically after the last digit"}
               </div>
             </div>
 

@@ -20,7 +20,7 @@ function ClientView() {
   const { me } = usePortal();
   const { data, error, loading, reload } = useAsync(() => api.client(id), [api, id]);
   const [range, setRange] = useState<"7" | "30">("30");
-  const [dialog, setDialog] = useState<null | "renew" | "edit" | "suspend" | "reactivate">(null);
+  const [dialog, setDialog] = useState<null | "renew" | "edit" | "suspend" | "reactivate" | "regenerate">(null);
   const [resetting, setResetting] = useState<Device | null>(null);
   const [reveal, setReveal] = useState(false);
   const { copy, copied } = useCopy();
@@ -67,6 +67,20 @@ function ClientView() {
             }}
           />
           <ReasonDialog
+            open={dialog === "regenerate"}
+            onClose={() => setDialog(null)}
+            title={`Replace the license key for ${data.restaurant.name}?`}
+            danger
+            confirmLabel="Replace key"
+            warning={<>The <b>old key stops working immediately</b>. Each of their PCs then shows &ldquo;Activate again&rdquo; and cannot create new bills until someone types the new key in (Settings → License &amp; sync). Their data and terminal slots are not affected. The new key is shown on this page afterwards.</>}
+            placeholder="e.g. Key was shared outside the restaurant"
+            onConfirm={async (reason) => {
+              await api.regenerateKey(data.restaurant.id, reason);
+              setReveal(true);
+              reload();
+            }}
+          />
+          <ReasonDialog
             open={dialog === "reactivate"}
             onClose={() => setDialog(null)}
             title={`Reactivate ${data.restaurant.name}`}
@@ -102,7 +116,7 @@ function ClientView() {
 type Props = {
   d: ClientDetail; isSuper: boolean; range: "7" | "30"; setRange: (r: "7" | "30") => void; reveal: boolean; setReveal: (b: boolean) => void;
   copy: (t: string, id?: string) => void; copied: string | null; showAllLedger: boolean; setShowAllLedger: (b: boolean) => void;
-  open: (d: "renew" | "edit" | "suspend" | "reactivate") => void; onReset: (d: Device) => void;
+  open: (d: "renew" | "edit" | "suspend" | "reactivate" | "regenerate") => void; onReset: (d: Device) => void;
 };
 
 function Body({ d, isSuper, range, setRange, reveal, setReveal, copy, copied, showAllLedger, setShowAllLedger, open, onReset }: Props) {
@@ -200,6 +214,11 @@ function Body({ d, isSuper, range, setRange, reveal, setReveal, copy, copied, sh
                   <Icon name={copied === "key" ? "check" : "content_copy"} className={cx("text-[20px]", copied === "key" && "text-tertiary")} />
                 </button>
               </div>
+              {isSuper && (
+                <button type="button" onClick={() => open("regenerate")} className="mt-2 flex items-center gap-1 text-label-md text-primary hover:underline">
+                  <Icon name="key" className="text-[16px]" /> Replace this key
+                </button>
+              )}
             </div>
             <dl className="mt-4 space-y-3 text-body-md">
               <Item label="Plan" value={`${l.plan_name} · ${formatINRShort(l.plan_price_paise)}${l.plan_id === "lifetime" ? "" : l.plan_id === "monthly" ? "/month" : "/year"}`} />

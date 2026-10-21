@@ -70,6 +70,7 @@ export const EVENT_LABEL: Record<EventType, string> = {
   plan_updated: "Plan updated",
   admin_added: "Team member added",
   admin_removed: "Team member removed",
+  key_regenerated: "License key replaced",
 };
 
 export const EVENT_ICON: Record<EventType, string> = {
@@ -84,6 +85,7 @@ export const EVENT_ICON: Record<EventType, string> = {
   plan_updated: "sell",
   admin_added: "person_add",
   admin_removed: "person_remove",
+  key_regenerated: "key",
 };
 
 export const EVENT_TONE: Record<EventType, "success" | "warning" | "danger" | "neutral" | "primary"> = {
@@ -98,6 +100,7 @@ export const EVENT_TONE: Record<EventType, "success" | "warning" | "danger" | "n
   plan_updated: "neutral",
   admin_added: "neutral",
   admin_removed: "warning",
+  key_regenerated: "warning",
 };
 
 export function initials(name: string): string {
@@ -131,6 +134,8 @@ export function describeEvent(e: { event: EventType; reason: string; payload: Re
       return `${p.email} as ${p.role}.`;
     case "admin_removed":
       return `${p.name} removed from the team.`;
+    case "key_regenerated":
+      return `Key ending ${p.old_tail} replaced by one ending ${p.new_tail}. ${e.reason}`;
     default:
       return e.reason;
   }

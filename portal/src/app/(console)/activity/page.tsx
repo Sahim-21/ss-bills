@@ -10,7 +10,7 @@ import { useApi } from "@/lib/portal";
 import type { EventRow, EventType } from "@/lib/types";
 
 type Preset = "today" | "7" | "30" | "all";
-const FILTERS: EventType[] = ["renewed", "created", "suspended", "reactivated", "device_reset", "device_bound", "activated", "updated"];
+const FILTERS: EventType[] = ["renewed", "created", "suspended", "reactivated", "device_reset", "device_bound", "activated", "key_regenerated", "updated"];
 const STEP = 25;
 
 export default function ActivityPage() {
