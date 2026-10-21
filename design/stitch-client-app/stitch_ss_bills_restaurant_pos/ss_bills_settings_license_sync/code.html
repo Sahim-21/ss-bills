@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-bright": "#faf9f6", "tertiary-container": "#128641", "error-container": "#ffdad6", "inverse-primary": "#ffb597", "on-tertiary-fixed-variant": "#005224", "surface-tint": "#a43d00", "inverse-surface": "#2f312f", "on-error": "#ffffff", "tertiary": "#006b31", "on-secondary-fixed-variant": "#494644", "outline-variant": "#e0c0b4", "surface-variant": "#e3e2df", "background": "#faf9f6", "error": "#ba1a1a", "primary-fixed": "#ffdbcd", "on-error-container": "#93000a", "secondary-fixed": "#e7e1de", "on-primary-fixed-variant": "#7d2d00", "on-secondary-fixed": "#1d1b19", "tertiary-fixed-dim": "#74dc8c", "outline": "#8c7167", "tertiary-fixed": "#90f9a6", "secondary-container": "#e4dedb", "on-tertiary-container": "#f7fff3", "surface": "#faf9f6", "inverse-on-surface": "#f2f1ee", "on-background": "#1a1c1a", "secondary": "#615e5b", "surface-container-low": "#f4f3f0", "surface-container": "#efeeeb", "on-primary": "#ffffff", "surface-dim": "#dbdad7", "on-surface": "#1a1c1a", "surface-container-high": "#e9e8e5", "on-secondary-container": "#65625f", "surface-container-lowest": "#ffffff", "on-tertiary": "#ffffff", "primary": "#a03b00", "surface-container-highest": "#e3e2df", "primary-container": "#c64f0e", "on-tertiary-fixed": "#00210b", "secondary-fixed-dim": "#cbc5c2", "on-surface-variant": "#584239", "on-primary-fixed": "#360f00", "on-secondary": "#ffffff", "on-primary-container": "#fffbff", "primary-fixed-dim": "#ffb597" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter-sm": "0.75rem", "space-sm": "0.5rem", "gutter-lg": "1.25rem", "space-md": "0.75rem", "space-lg": "1rem", "space-xs": "0.25rem", "margin-desktop": "1.5rem", "gutter": "1rem", "margin": "1rem", "space-xl": "1.5rem" }, "fontFamily": { "label-md": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "price-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "price-lg": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "price-hero": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"] }, "fontSize": { "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }], "price-md": ["15px", { "lineHeight": "20px", "fontWeight": "700" }], "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "700" }], "price-lg": ["22px", { "lineHeight": "28px", "fontWeight": "700" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "price-hero": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "700" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-16 px-space-lg flex items-center gap-space-md bg-surface-container-low"><div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-[24px]">local_dining</span></div><div class="flex flex-col min-w-0"><span class="font-headline-sm text-headline-sm text-on-surface truncate leading-tight">SS Bills</span><span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">Enterprise POS</span></div></div><div class="px-space-md py-space-sm"><span class="font-label-sm text-label-sm text-secondary uppercase px-space-sm">Operations &amp; Admin</span></div><nav class="flex flex-col gap-space-xs px-space-md" data-active-classes="bg-primary-container text-on-primary-container font-headline-sm shadow-sm"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="billing" href="#"><span class="material-symbols-outlined text-[20px]">point_of_sale</span><span class="font-label-lg text-label-lg">Billing</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="tables" href="#"><span class="material-symbols-outlined text-[20px]">table_restaurant</span><span class="font-label-lg text-label-lg">Tables</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="order-history" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="font-label-lg text-label-lg">History</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="live-metrics" href="#"><span class="material-symbols-outlined text-[20px]">monitoring</span><span class="font-label-lg text-label-lg">Metrics</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="tax-reports" href="#"><span class="material-symbols-outlined text-[20px]">assessment</span><span class="font-label-lg text-label-lg">Reports</span></a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="menu-management" href="#"><span class="material-symbols-outlined text-[20px]">restaurant_menu</span><span class="font-label-lg text-label-lg">Menu</span></a><a aria-current="page" class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg transition-all bg-primary-container text-on-primary-container font-headline-sm shadow-sm" data-path="system-settings" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span class="font-label-lg text-label-lg">Settings</span></a></nav></div><div class="p-space-md flex flex-col gap-space-sm bg-surface-container"><div class="flex items-center justify-between text-on-surface-variant px-space-sm"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-sm text-label-sm">LAN Sync: Online</span></div><span class="font-label-sm text-label-sm text-secondary">12ms</span></div><div class="flex items-center gap-space-sm px-space-sm py-space-xs rounded bg-surface-container-lowest"><span class="material-symbols-outlined text-[18px] text-primary">print</span><span class="font-label-sm text-label-sm text-on-surface truncate">KOT-01 (Thermal ESC/POS)</span></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-xl"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-on-surface"><span class="material-symbols-outlined text-primary text-[20px]">storefront</span><span class="font-headline-sm text-headline-sm">Spice Garden</span><span class="font-label-sm text-label-sm text-secondary bg-surface-container px-space-xs py-0.5 rounded">(SG-BLR-01)</span></div><span class="text-outline-variant font-label-md">/</span><div class="flex items-center gap-space-xs"><span class="font-label-md text-label-md text-on-surface-variant">System Settings &amp; Configurations</span></div></div><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm px-space-md py-1.5 rounded-full bg-surface-container text-on-surface"><span class="material-symbols-outlined text-[16px] text-tertiary">schedule</span><span class="font-label-sm text-label-sm">Shift #2 • Active (02:45 PM)</span></div><div class="flex items-center gap-space-xs px-space-sm py-1 rounded bg-tertiary-container text-on-tertiary-container"><span class="material-symbols-outlined text-[16px]">cloud_done</span><span class="font-label-sm text-label-sm font-bold">Synced</span></div><div class="h-6 w-px bg-surface-variant"></div><div class="flex items-center gap-space-sm"><div class="flex flex-col text-right"><span class="font-label-md text-label-md text-on-surface leading-none">Aakash S.</span><span class="font-label-sm text-label-sm text-secondary">Floor Cashier</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-background min-h-screen px-space-xl py-space-lg"><div class="flex flex-col w-full gap-space-lg">
+<div class="grid grid-cols-12 gap-space-lg items-start">
+<!-- Sub-navigation Column (Settings Hub) -->
+<aside class="col-span-12 lg:col-span-3 flex flex-col gap-space-md">
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-space-xs">
+<div class="px-space-sm py-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Terminal Config</span>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-[20px] text-secondary">store</span>
+<span class="font-label-lg text-label-lg">Restaurant Profile</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-[20px] text-secondary">receipt</span>
+<span class="font-label-lg text-label-lg">Taxes &amp; GST (HUG)</span>
+</div>
+<span class="font-label-sm text-label-sm bg-surface-container text-secondary px-2 py-0.5 rounded">5% / 18%</span>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-[20px] text-secondary">print</span>
+<span class="font-label-lg text-label-lg">Printers &amp; KOT Setup</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</a>
+<!-- Active Settings Section -->
+<div class="flex items-center justify-between px-space-md py-space-sm rounded-lg bg-primary-container text-on-primary-container shadow-sm">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-headline-sm text-headline-sm text-on-primary-container">License &amp; Sync</span>
+</div>
+<span class="font-label-sm text-label-sm bg-primary text-on-primary px-2 py-0.5 rounded-full font-bold tracking-wide">PRO</span>
+</div>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-[20px] text-secondary">hub</span>
+<span class="font-label-lg text-label-lg">Kitchen Display (KDS)</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-[20px] text-secondary">lock_clock</span>
+<span class="font-label-lg text-label-lg">Staff Roles &amp; Shift PIN</span>
+</div>
+</a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-[20px] text-secondary">database</span>
+<span class="font-label-lg text-label-lg">Local DB Backups</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary">SQLite</span>
+</a>
+</nav>
+</div>
+<!-- Quick Node System Specs -->
+<div class="bg-surface-container p-space-md rounded-xl flex flex-col gap-space-sm text-on-surface">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary">Device Node Runtime</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">Node v18 · POS Client</span>
+</div>
+<div class="flex flex-col gap-1 text-secondary">
+<div class="flex justify-between font-body-sm text-body-sm">
+<span>RAM Allocation</span>
+<span class="font-label-md text-label-md text-on-surface">1.4 GB / 8.0 GB</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-tertiary-container h-full rounded-full" style="width: 22%;"></div>
+</div>
+</div>
+<div class="flex justify-between items-center pt-space-xs text-secondary">
+<span class="font-body-sm text-body-sm">Storage Engine</span>
+<span class="font-label-md text-label-md text-on-surface">NVMe Fast WAL</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Flow -->
+<div class="col-span-12 lg:col-span-9 flex flex-col gap-space-lg">
+<!-- Top Title Area -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm pb-space-xs">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">License Management &amp; Cloud Sync</h1>
+<p class="font-body-md text-body-md text-secondary">Manage restaurant terminal activation, subscription tier, and hybrid offline-first sync telemetry.</p>
+</div>
+<div class="flex items-center gap-space-sm self-start md:self-auto">
+<span class="flex items-center gap-1.5 bg-surface-container px-space-md py-1.5 rounded-full text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+            Node ID: SG-BLR-01
+          </span>
+</div>
+</div>
+<!-- Offline Grace-Period Warning Banner -->
+<div class="relative overflow-hidden bg-[#FEF3C7] rounded-xl p-space-lg shadow-sm">
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-md max-w-3xl">
+<div class="w-10 h-10 rounded-lg bg-[#F59E0B] text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5 md:mt-0">
+<span class="material-symbols-outlined text-[24px]">signal_wifi_bad</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-[#92400E]">Offline for 2 days – please connect to the internet within 5 days</span>
+<span class="bg-[#FDE68A] text-[#92400E] font-label-sm text-label-sm px-2 py-0.5 rounded font-bold uppercase tracking-wide">Grace Active</span>
+</div>
+<p class="font-body-md text-body-md text-[#78350F] leading-relaxed">
+                SS Bills is currently running in local offline counter mode. Receipts, KOTs, and bill settlement work without interruption. Cloud sync, multi-branch analytics, and GST e-invoice generation will pause if grace period expires on <strong class="font-bold">29 Oct 2026 (5 days remaining)</strong>.
+              </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0 w-full md:w-auto justify-end">
+<button class="h-11 px-space-lg bg-[#92400E] text-white rounded-lg font-label-lg text-label-lg flex items-center gap-2 shadow hover:bg-[#78350F] active:scale-95 transition-all" onclick="diagnoseNetwork()">
+<span class="material-symbols-outlined text-[18px]">wifi_tethering</span>
+<span>Diagnose Network</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Primary License Status Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-xl shadow-sm relative overflow-hidden">
+<div class="absolute -top-16 -right-16 w-48 h-48 bg-primary/5 rounded-full pointer-events-none blur-2xl"></div>
+<div class="flex flex-col lg:flex-row items-start justify-between gap-space-lg pb-space-lg">
+<div class="flex items-start gap-space-lg">
+<div class="w-14 h-14 rounded-xl bg-primary-fixed flex items-center justify-center text-on-primary-fixed shadow-sm shrink-0">
+<span class="material-symbols-outlined text-[32px]">verified</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="font-headline-lg text-headline-lg text-on-surface">Restaurant Pro Edition</span>
+<span class="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                  Active · Commercial License
+                </span>
+</div>
+<span class="font-body-md text-body-md text-secondary mt-0.5">Multi-terminal sync &amp; Kitchen Order Ticketing (KOT) Engine</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm bg-surface-container-low p-space-xs rounded-xl self-stretch lg:self-auto justify-end">
+<div class="px-space-md py-1 flex flex-col items-end">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Plan Expiry</span>
+<span class="font-price-md text-price-md text-on-surface">31 March 2027</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">154 days remaining</span>
+</div>
+<button class="h-11 px-space-md bg-surface-container-highest hover:bg-surface-container text-primary rounded-lg font-label-md text-label-md flex items-center gap-1.5 transition-all">
+<span>Renew Plan</span>
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- License Metadata Matrix -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md pt-space-md">
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Licensed Entity</span>
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Spice Garden Restaurant &amp; Bar</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+              Indiranagar, Bengaluru Urban
+            </span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Registered GSTIN (India)</span>
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface tracking-wider font-mono">29AAAAA0000A1Z5</span>
+<span class="bg-tertiary-container text-on-tertiary-container px-1.5 py-0.2 rounded font-label-sm text-label-sm">FSSAI VALID</span>
+</div>
+<span class="font-body-sm text-body-sm text-secondary">Karnataka State Tax Jurisdiction</span>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container-low flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Assigned Terminal ID</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">POS-01</span>
+<span class="font-body-sm text-body-sm text-secondary font-mono">SG-BLR-MAIN-COUNTER</span>
+</div>
+</div>
+<!-- License Key Container with Quick Copy -->
+<div class="mt-space-md p-space-md rounded-xl bg-surface-container flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center gap-space-md w-full sm:w-auto">
+<span class="font-label-md text-label-md text-secondary uppercase tracking-wider shrink-0">License Key:</span>
+<span class="font-mono font-headline-sm text-headline-sm text-on-surface tracking-widest bg-surface-container-lowest px-space-md py-1.5 rounded-lg select-all shadow-inner" id="licenseKeyString">
+              SSB-PRO-9842-8819-KOT9-2027
+            </span>
+</div>
+<div class="flex items-center gap-space-sm w-full sm:w-auto justify-end">
+<button class="h-10 px-space-md bg-surface-container-lowest hover:bg-surface-bright text-on-surface rounded-lg font-label-md text-label-md flex items-center gap-2 shadow-sm transition-all active:scale-95" onclick="copyLicenseKey()">
+<span class="material-symbols-outlined text-[18px]" id="copyIcon">content_copy</span>
+<span id="copyLabel">Copy Key</span>
+</button>
+<button class="h-10 px-space-md bg-surface-container-lowest hover:bg-surface-bright text-primary rounded-lg font-label-md text-label-md flex items-center gap-2 shadow-sm transition-all">
+<span class="material-symbols-outlined text-[18px]">key</span>
+<span>Change Key</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Twin Telemetry Cards: Cloud Sync & Hardware Peripherals -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-lg">
+<!-- Cloud Sync & Telemetry Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between gap-space-lg">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">cloud_sync</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Hybrid Cloud Sync Telemetry</h2>
+<p class="font-body-sm text-body-sm text-secondary">Local-first WAL to Central AWS Gateway</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-error bg-error-container px-space-sm py-1 rounded font-bold">Unsynced (48h)</span>
+</div>
+<!-- Sync Metas -->
+<div class="flex flex-col gap-space-sm p-space-md rounded-lg bg-surface-container-low">
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-body-sm text-body-sm text-secondary">Last Cloud Sync</span>
+<span class="font-label-md text-label-md">22 Oct 2026, 04:15 PM</span>
+</div>
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-body-sm text-body-sm text-secondary">Pending Queue (Local)</span>
+<span class="font-label-md text-label-md text-primary font-bold">142 bills pending upload</span>
+</div>
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-body-sm text-body-sm text-secondary">Cached Price Updates</span>
+<span class="font-label-md text-label-md">4 items modified locally</span>
+</div>
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-body-sm text-body-sm text-secondary">Cloud Gateway Target</span>
+<span class="font-body-sm text-body-sm font-mono text-on-surface-variant">aws-south1.cloud.ssbills.in</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-body-sm text-body-sm text-secondary">Route Latency</span>
+<span class="font-label-sm text-label-sm text-tertiary flex items-center gap-1 font-bold">
+<span class="w-2 h-2 rounded-full bg-tertiary-container animate-ping"></span>
+                  48ms (Reconnectable)
+                </span>
+</div>
+</div>
+<!-- Inline SVG Chart: Sync Queue Distribution (Mini Viz) -->
+<div class="bg-surface-container-low p-space-md rounded-lg flex flex-col gap-space-xs">
+<div class="flex justify-between items-center text-secondary font-label-sm text-label-sm">
+<span>Queue Breakdown by Type</span>
+<span>Total 146 Payload Records</span>
+</div>
+<div class="w-full h-3 rounded-full overflow-hidden flex bg-surface-container-high">
+<div class="bg-primary h-full" style="width: 78%;" title="114 Settled Invoices"></div>
+<div class="bg-[#F59E0B] h-full" style="width: 15%;" title="22 Cancelled / Void KOTs"></div>
+<div class="bg-tertiary h-full" style="width: 7%;" title="4 Master Menu Revisions"></div>
+</div>
+<div class="flex justify-between items-center text-secondary font-body-sm text-body-sm pt-1">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span> Bills (78%)</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#F59E0B] inline-block"></span> KOT Voids (15%)</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-tertiary inline-block"></span> Catalog (7%)</span>
+</div>
+</div>
+</div>
+<!-- Trigger Sync CTA -->
+<button class="w-full h-13 py-space-md px-space-lg bg-primary hover:bg-primary-container text-on-primary rounded-xl font-label-lg text-label-lg flex items-center justify-center gap-space-md shadow-md active:scale-[0.99] transition-all" id="syncNowBtn" onclick="triggerManualSync()">
+<span class="material-symbols-outlined text-[22px]" id="syncSpinner">sync</span>
+<span class="font-bold tracking-wide" id="syncBtnText">Sync now [Ctrl+S]</span>
+</button>
+</div>
+<!-- Terminal Hardware & Peripherals Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between gap-space-lg">
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">terminal</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Terminal Hardware &amp; Peripherals</h2>
+<p class="font-body-sm text-body-sm text-secondary">Countertop Device Interface Controller</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary bg-tertiary-fixed px-space-sm py-1 rounded font-bold">All Connected</span>
+</div>
+<!-- Peripherals List -->
+<div class="flex flex-col gap-space-xs">
+<!-- Thermal Printer -->
+<div class="flex items-center justify-between p-space-md rounded-lg bg-surface-container-low hover:bg-surface-container transition-all">
+<div class="flex items-center gap-space-md min-w-0">
+<span class="material-symbols-outlined text-primary text-[22px]">print</span>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Epson TM-T82III (ESC/POS)</span>
+<span class="font-body-sm text-body-sm text-secondary">High-speed 80mm Thermal Receipt · USB-001</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded font-bold">Online</span>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-lowest text-secondary" title="Test Print">
+<span class="material-symbols-outlined text-[18px]">receipt_long</span>
+</button>
+</div>
+</div>
+<!-- Cash Drawer -->
+<div class="flex items-center justify-between p-space-md rounded-lg bg-surface-container-low hover:bg-surface-container transition-all">
+<div class="flex items-center gap-space-md min-w-0">
+<span class="material-symbols-outlined text-primary text-[22px]">point_of_sale</span>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Cash Drawer (24V RJ11 Trigger)</span>
+<span class="font-body-sm text-body-sm text-secondary">Triggered via Thermal Printer DK Port</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded font-bold">Working</span>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-lowest text-secondary" title="Test Pulse">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+</button>
+</div>
+</div>
+<!-- Customer Facing Display (CFD) -->
+<div class="flex items-center justify-between p-space-md rounded-lg bg-surface-container-low hover:bg-surface-container transition-all">
+<div class="flex items-center gap-space-md min-w-0">
+<span class="material-symbols-outlined text-primary text-[22px]">desktop_windows</span>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Customer Display (CFD)</span>
+<span class="font-body-sm text-body-sm text-secondary">Secondary HDMI Panel · 1024x600 px</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded font-bold">Connected</span>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-lowest text-secondary" title="Preview CFD">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- PineLabs Swiper -->
+<div class="flex items-center justify-between p-space-md rounded-lg bg-surface-container-low hover:bg-surface-container transition-all">
+<div class="flex items-center gap-space-md min-w-0">
+<span class="material-symbols-outlined text-primary text-[22px]">contactless</span>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">PineLabs Plutus EDC Terminal</span>
+<span class="font-body-sm text-body-sm text-secondary">UPI Dynamic QR / Card Swiper · Bluetooth</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<span class="font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded font-bold">BT Synced</span>
+<button class="p-1.5 rounded-lg hover:bg-surface-container-lowest text-secondary" title="Ping EDC">
+<span class="material-symbols-outlined text-[18px]">cell_tower</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs border-none text-secondary">
+<span class="font-body-sm text-body-sm">All peripheral drivers certified for ESC/POS Standard</span>
+<button class="font-label-md text-label-md text-primary hover:underline flex items-center gap-1">
+<span>Scan USB bus</span>
+<span class="material-symbols-outlined text-[16px]">refresh</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Operational Controls & License Actions Bar -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm text-secondary">
+<span class="material-symbols-outlined text-[20px] text-outline">verified_user</span>
+<span class="font-body-sm text-body-sm">Hardware Token: <code class="font-mono text-on-surface font-bold">HWID-8271A-B9204-IND</code></span>
+</div>
+<div class="flex items-center gap-space-md flex-wrap justify-end w-full md:w-auto">
+<button class="h-11 px-space-md rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>Download License Certificate (PDF)</span>
+</button>
+<button class="h-11 px-space-md rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-2 transition-all">
+<span class="material-symbols-outlined text-[18px]">move_up</span>
+<span>Transfer License to another PC</span>
+</button>
+<button class="h-11 px-space-md rounded-lg bg-error-container hover:bg-[#ffc9c3] text-on-error-container font-label-md text-label-md flex items-center gap-2 transition-all" onclick="confirmDeactivation()">
+<span class="material-symbols-outlined text-[18px]">power_settings_new</span>
+<span>Deactivate Terminal License</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function copyLicenseKey() {
+    const key = document.getElementById('licenseKeyString').innerText.trim();
+    navigator.clipboard.writeText(key).then(() => {
+      const copyIcon = document.getElementById('copyIcon');
+      const copyLabel = document.getElementById('copyLabel');
+      copyIcon.innerText = 'check';
+      copyLabel.innerText = 'Copied!';
+      setTimeout(() => {
+        copyIcon.innerText = 'content_copy';
+        copyLabel.innerText = 'Copy Key';
+      }, 2000);
+    }).catch(err => {
+      console.error('Failed to copy license key:', err);
+    });
+  }
+
+  function triggerManualSync() {
+    const btn = document.getElementById('syncNowBtn');
+    const spinner = document.getElementById('syncSpinner');
+    const label = document.getElementById('syncBtnText');
+
+    spinner.classList.add('animate-spin');
+    label.innerText = 'Syncing 146 local packets...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      spinner.classList.remove('animate-spin');
+      label.innerText = 'Sync Completed Successfully!';
+      btn.classList.remove('bg-primary');
+      btn.classList.add('bg-tertiary');
+
+      setTimeout(() => {
+        label.innerText = 'Sync now [Ctrl+S]';
+        btn.classList.remove('bg-tertiary');
+        btn.classList.add('bg-primary');
+        btn.disabled = false;
+      }, 2500);
+    }, 1800);
+  }
+
+  function diagnoseNetwork() {
+    alert("Initiating SS Bills Network Diagnostics...\n- Pinging AWS Gateway (aws-south1.cloud.ssbills.in)... [OK]\n- Checking Local DNS Resolver... [OK]\n- Outbound HTTPS Port 443... [FAILED - Gateway Timeout]\n\nRecommendation: Please re-plug Ethernet cable or toggle Wi-Fi dongle.");
+  }
+
+  function confirmDeactivation() {
+    if (confirm("Are you sure you want to deactivate license SSB-PRO-9842-8819-KOT9-2027 on this terminal? Unsynced offline transactions must be backed up first.")) {
+      alert("License release initiated. You can now reactivate this key on another terminal.");
+    }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      triggerManualSync();
+    }
+  });
+</script></main></div></body></html>

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ss-bills-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "app", "run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "ss-bills-console",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "portal", "run", "dev"],
+      "port": 3100
+    }
+  ]
+}

@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-error-container":"#93000a","on-secondary-fixed":"#1d1b19","on-error":"#ffffff","on-background":"#241915","on-primary-fixed-variant":"#7d2d00","primary-fixed":"#ffdbcd","primary":"#792b00","surface-container-low":"#fff1ec","background":"#fff8f6","on-tertiary-fixed":"#001a41","primary-container":"#c64f0e","inverse-on-surface":"#ffede7","surface-container-highest":"#f4ded6","error-container":"#ffdad6","on-tertiary-container":"#f7fff3","tertiary-container":"#0058bc","tertiary-fixed-dim":"#adc6ff","surface-container-lowest":"#ffffff","on-primary":"#ffffff","surface-dim":"#ebd6ce","outline-variant":"#e0c0b4","on-surface":"#1a1c1a","on-primary-container":"#ffc8b3","inverse-primary":"#ffb597","on-surface-variant":"#584239","on-tertiary":"#ffffff","tertiary":"#006b31","inverse-surface":"#3a2e29","secondary":"#615e5b","tertiary-fixed":"#d8e2ff","surface-container":"#efeeeb","secondary-container":"#e7e1dd","on-tertiary-fixed-variant":"#004494","secondary-fixed":"#e7e1dd","on-secondary-container":"#676461","outline":"#8c7167","surface-bright":"#faf9f6","error":"#ba1a1a","on-primary-fixed":"#360f00","on-secondary-fixed-variant":"#494644","surface-container-high":"#e9e8e5","surface-tint":"#a43e03","surface":"#faf9f6","primary-fixed-dim":"#ffb597","secondary-fixed-dim":"#cac6c2","surface-variant":"#f4ded6","on-secondary":"#ffffff"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"gutter":"1rem","space-sm":"0.5rem","space-md":"0.75rem","space-lg":"1rem","space-xl":"1.5rem","margin":"1rem","gutter-sm":"0.75rem","margin-desktop":"1.5rem","space-xs":"0.25rem","gutter-lg":"1.25rem"},fontFamily:{"price-lg":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"price-hero":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"price-md":["Plus Jakarta Sans"]},fontSize:{"price-lg":["22px",{lineHeight:"28px",fontWeight:"700"}],"body-sm":["12px",{lineHeight:"16px",fontWeight:"400"}],"label-lg":["14px",{lineHeight:"20px",letterSpacing:"0.01em",fontWeight:"600"}],"label-md":["12px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"600"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"500"}],"headline-md":["20px",{lineHeight:"28px",fontWeight:"700"}],"headline-lg":["24px",{lineHeight:"32px",letterSpacing:"-0.01em",fontWeight:"700"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.04em",fontWeight:"700"}],"headline-xl":["32px",{lineHeight:"40px",letterSpacing:"-0.02em",fontWeight:"800"}],"price-hero":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"800"}],"headline-sm":["16px",{lineHeight:"24px",fontWeight:"700"}],"price-md":["15px",{lineHeight:"20px",fontWeight:"700"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-space-lg"><div class="flex flex-col"><div class="flex items-center gap-space-sm px-space-xl pb-space-xl"><img alt="SS Bills Console Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VMStlFdgzXLyoBCt-W445y2jALX67qQjtY9N-wADSyTXsOmDmhsLpfqzHXJ_PMkXLQ5B96fwU3-1jSN-tSjVJpTOQXesSNr9Ll8yefwuKwgvIr4e0utUJsyLveu3a6LIZa6xmn7Y5USPVZjTETewcGlWPQ9LTHte1bAjTu1ffItKZfbFI5Avfzl3Jr3vKGcbl3YXOO86RWamgYeqJTvXR_6tqC2NE6K6L6yOa9Mz4PDCkhj0zoK7vnewE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight">SS Bills</span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Vendor Console</span></div></div><div class="px-space-xl mb-space-sm"><span class="font-label-sm text-label-sm text-outline uppercase">Platform Menu</span></div><nav class="flex flex-col gap-space-xs px-space-md" data-active-classes="bg-primary text-on-primary font-label-lg shadow-sm"><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span>Overview</a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="clients" href="#"><span class="material-symbols-outlined text-[20px]">storefront</span>Clients</a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="licenses" href="#"><span class="material-symbols-outlined text-[20px]">vpn_key</span>Licenses</a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="sales-insights" href="#"><span class="material-symbols-outlined text-[20px]">insights</span>Sales Insights</a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="activity-log" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span>Activity Log</a><a class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="settings" href="#"><span class="material-symbols-outlined text-[20px]">settings</span>Settings</a></nav></div><div class="px-space-md"><div class="bg-surface-container rounded-xl p-space-md flex flex-col gap-space-xs"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant">POS Core v4.2</span><span class="font-label-sm text-label-sm text-tertiary font-bold">PROD</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">842 active restaurant nodes connected.</p></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-xl"><div class="flex items-center gap-space-lg flex-1 max-w-xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span><input class="w-full bg-surface-container-low text-on-surface placeholder-outline pl-10 pr-4 py-2 rounded-lg font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary shadow-inner" placeholder="Search restaurant, city, license key…" type="text"/></div></div><div class="flex items-center gap-space-lg"><div class="inline-flex items-center gap-space-xs px-space-md py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-tertiary font-bold"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>Cloud Sync Online</div><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary font-label-sm text-[10px] text-on-primary font-bold">3</span></button><div class="flex items-center gap-space-md pl-space-sm"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-lg text-label-lg text-on-surface">Rajesh Verma</span><span class="font-body-sm text-body-sm text-on-surface-variant">Super Admin</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-background min-h-screen w-full px-space-xl py-space-xl"><div class="flex flex-col w-full">
+<!-- Interactive Script to handle active sidebar item & quick filters -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set active navigation to Clients in App Shell sidebar
+      const navLinks = document.querySelectorAll('aside nav a');
+      navLinks.forEach(link => {
+        if (link.getAttribute('data-path') === 'clients') {
+          link.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-highest');
+          link.classList.add('bg-primary', 'text-on-primary', 'font-label-lg', 'shadow-sm');
+        } else if (link.getAttribute('data-path') === 'overview') {
+          link.classList.remove('bg-primary', 'text-on-primary', 'font-label-lg', 'shadow-sm');
+          link.classList.add('text-on-surface-variant', 'hover:bg-surface-container-highest');
+        }
+      });
+    });
+
+    function toggleMenu(id) {
+      const menu = document.getElementById(id);
+      const allMenus = document.querySelectorAll('[data-dropdown-menu]');
+      allMenus.forEach(m => {
+        if (m.id !== id) m.classList.add('hidden');
+      });
+      if (menu) {
+        menu.classList.toggle('hidden');
+      }
+    }
+
+    window.onclick = function(event) {
+      if (!event.target.closest('[data-dropdown-trigger]') && !event.target.closest('[data-dropdown-menu]')) {
+        document.querySelectorAll('[data-dropdown-menu]').forEach(m => m.classList.add('hidden'));
+      }
+    };
+  </script>
+<!-- Top Action & Title Zone -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-lg mb-space-xl">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider bg-surface-container-high px-space-sm py-0.5 rounded-full font-bold">POS Fleet Management</span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+          Live Sync Active
+        </span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Client Management</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        48 onboarded restaurant accounts <span class="text-outline">/</span> 42 active billing nodes across 12 cities
+      </p>
+</div>
+<!-- CTAs -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<button class="inline-flex items-center gap-space-xs px-space-md py-2.5 rounded-lg bg-surface-container text-on-surface font-label-lg text-label-lg hover:bg-surface-container-highest transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+        Export CSV
+      </button>
+<button class="inline-flex items-center gap-space-xs px-space-md py-2.5 rounded-lg bg-surface-container text-on-surface font-label-lg text-label-lg hover:bg-surface-container-highest transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">sync_alt</span>
+        Batch License Sync
+      </button>
+<button class="inline-flex items-center gap-space-xs px-space-lg py-2.5 rounded-lg bg-primary text-on-primary font-label-lg text-label-lg hover:opacity-95 active:scale-[0.98] transition-all shadow-md" type="button">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+        + Add Client
+      </button>
+</div>
+</div>
+<!-- Metric Quick Ribbon -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md mb-space-lg">
+<div class="bg-surface-container rounded-xl p-space-md flex items-center justify-between shadow-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total MRR / ARR</span>
+<span class="font-price-lg text-price-lg text-on-surface tracking-tight">₹18.4 Lakhs <span class="font-label-sm text-label-sm text-outline font-normal">ARR</span></span>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">payments</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-xl p-space-md flex items-center justify-between shadow-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Active Sync Rate</span>
+<span class="font-price-lg text-price-lg text-tertiary tracking-tight">98.2% <span class="font-label-sm text-label-sm text-on-surface-variant font-normal">Connected</span></span>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[22px]">wifi_tethering</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-xl p-space-md flex items-center justify-between shadow-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Today's Aggregate Sales</span>
+<span class="font-price-lg text-price-lg text-on-surface tracking-tight">₹34.82 Lakhs</span>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">point_of_sale</span>
+</div>
+</div>
+</div>
+<!-- Filter & Search Controls Zone -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col gap-space-md mb-space-lg shadow-sm">
+<div class="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-space-md">
+<!-- Status Tabs -->
+<div class="flex flex-wrap items-center gap-space-xs overflow-x-auto pb-1 xl:pb-0">
+<button class="inline-flex items-center gap-space-xs px-3.5 py-1.5 rounded-lg bg-inverse-surface text-inverse-on-surface font-label-md text-label-md font-bold shadow-sm" type="button">
+<span>All</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-on-surface font-label-sm text-[10px]">48</span>
+</button>
+<button class="inline-flex items-center gap-space-xs px-3.5 py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-container-highest transition-colors" type="button">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>Active</span>
+<span class="text-on-surface-variant font-body-sm text-[11px] font-semibold">42</span>
+</button>
+<button class="inline-flex items-center gap-space-xs px-3.5 py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-container-highest transition-colors" type="button">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>Expiring Soon</span>
+<span class="text-primary font-body-sm text-[11px] font-semibold">5</span>
+</button>
+<button class="inline-flex items-center gap-space-xs px-3.5 py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-container-highest transition-colors" type="button">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>Suspended</span>
+<span class="text-error font-body-sm text-[11px] font-semibold">1</span>
+</button>
+<button class="inline-flex items-center gap-space-xs px-3.5 py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-container-highest transition-colors" type="button">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>Offline &gt; 7d</span>
+<span class="text-on-surface-variant font-body-sm text-[11px] font-semibold">3</span>
+</button>
+</div>
+<!-- Plan Filter Toggle -->
+<div class="flex items-center gap-1 p-1 bg-surface-container-high rounded-lg self-start xl:self-auto">
+<button class="px-3 py-1 rounded bg-surface text-primary font-label-sm text-label-sm font-bold shadow-sm" type="button">All Plans</button>
+<button class="px-3 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-colors" type="button">Monthly</button>
+<button class="px-3 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-colors" type="button">Yearly</button>
+<button class="px-3 py-1 rounded text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-colors" type="button">Lifetime POS</button>
+</div>
+</div>
+<!-- Secondary Filter Bar (City Search & Filter Quick Tags) -->
+<div class="flex flex-col md:flex-row items-center gap-space-md pt-space-xs">
+<div class="relative w-full md:w-80">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">location_on</span>
+<input class="w-full bg-surface-container-low text-on-surface placeholder-outline pl-9 pr-3 py-1.5 rounded-lg font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary shadow-inner" placeholder="Filter by city (e.g. Delhi NCR, Bengaluru…)" type="text"/>
+</div>
+<div class="flex items-center gap-space-xs flex-wrap w-full md:w-auto">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider mr-1">Hotspots:</span>
+<button class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-colors" type="button">Delhi NCR (14)</button>
+<button class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-colors" type="button">Bengaluru (12)</button>
+<button class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-colors" type="button">Mumbai (9)</button>
+<button class="px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm transition-colors" type="button">Hyderabad (7)</button>
+</div>
+<div class="ml-auto hidden md:flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+        All Cloud DBs Healthy
+      </div>
+</div>
+</div>
+<!-- Restaurant Clients Table / Card Container -->
+<div class="bg-surface rounded-xl shadow-sm overflow-hidden mb-space-xl">
+<!-- Desktop Table View (Hidden on mobile <768px) -->
+<div class="hidden md:block overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-space-md px-space-lg font-semibold">Restaurant &amp; Outlets</th>
+<th class="py-space-md px-space-md font-semibold">Primary Contact</th>
+<th class="py-space-md px-space-md font-semibold">Plan</th>
+<th class="py-space-md px-space-md font-semibold">License Status</th>
+<th class="py-space-md px-space-md font-semibold">Expiry Date</th>
+<th class="py-space-md px-space-md font-semibold">Heartbeat</th>
+<th class="py-space-md px-space-md font-semibold text-right">Today's Sales</th>
+<th class="py-space-md px-space-lg font-semibold text-center">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y-0">
+<!-- Row 1: Punjab Grill Express -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary font-headline-sm font-bold shrink-0 shadow-sm">
+                  PG
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">Punjab Grill Express</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-[10px] font-bold">5 Outlets</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-outline">location_on</span>
+                    Delhi NCR • Cyber Hub
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Harpreet Singh</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">+91 98112 44321</span>
+<a class="font-body-sm text-[11px] text-primary hover:underline truncate" href="mailto:harpreet@punjabgrill.in">harpreet@punjabgrill.in</a>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-bold">
+                Yearly Pro
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-tertiary font-label-sm text-label-sm font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+                Active
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-label-md text-label-md text-on-surface">28 Mar 2025</span>
+<span class="block font-body-sm text-[11px] text-on-surface-variant">Auto-renews</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-sm text-body-sm text-tertiary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">network_ping</span>
+                12m ago
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">₹1,42,800</span>
+<span class="block font-body-sm text-[11px] text-tertiary font-semibold">312 bills</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="inline-flex items-center gap-space-xs">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold transition-colors" type="button">
+                  View
+                </button>
+<div class="relative">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" data-dropdown-trigger="" onclick="toggleMenu('menu-row-1')" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+<div class="hidden absolute right-0 mt-1 w-48 bg-surface-container-lowest rounded-lg shadow-xl p-1 z-30 text-left" data-dropdown-menu="" id="menu-row-1">
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit Details
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">devices</span> Hardware Nodes (5)
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span> Send Payment Link
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-error hover:bg-error-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">pause_circle</span> Suspend Terminal
+                    </button>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 2: Bawarchi Grand -->
+<tr class="hover:bg-surface-container-low transition-colors group bg-surface-container-lowest">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface font-headline-sm font-bold shrink-0 shadow-sm">
+                  BG
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">Bawarchi Grand</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-[10px] font-bold">2 Outlets</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-outline">location_on</span>
+                    Hyderabad • Madhapur
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Syed Khaleel</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">+91 94401 88290</span>
+<a class="font-body-sm text-[11px] text-primary hover:underline truncate" href="mailto:admin@bawarchigrand.com">admin@bawarchigrand.com</a>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-inverse-surface text-inverse-on-surface font-label-sm text-label-sm font-bold">
+                Lifetime POS
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-tertiary font-label-sm text-label-sm font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+                Active
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-label-md text-label-md text-on-surface">Lifetime</span>
+<span class="block font-body-sm text-[11px] text-outline">Perpetual key</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-sm text-body-sm text-tertiary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">network_ping</span>
+                34m ago
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">₹2,14,500</span>
+<span class="block font-body-sm text-[11px] text-tertiary font-semibold">540 bills</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="inline-flex items-center gap-space-xs">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold transition-colors" type="button">
+                  View
+                </button>
+<div class="relative">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" data-dropdown-trigger="" onclick="toggleMenu('menu-row-2')" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+<div class="hidden absolute right-0 mt-1 w-48 bg-surface-container-lowest rounded-lg shadow-xl p-1 z-30 text-left" data-dropdown-menu="" id="menu-row-2">
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit Details
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">devices</span> Hardware Nodes (2)
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span> Send Payment Link
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-error hover:bg-error-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">pause_circle</span> Suspend Terminal
+                    </button>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 3: The Saffron Lounge (Expiring Soon) -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary font-headline-sm font-bold shrink-0 shadow-sm">
+                  SL
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">The Saffron Lounge</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-[10px] font-bold">1 Terminal</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-outline">location_on</span>
+                    Mumbai • Bandra West
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Ananya Sen</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">+91 98200 11984</span>
+<a class="font-body-sm text-[11px] text-primary hover:underline truncate" href="mailto:billing@saffronlounge.in">billing@saffronlounge.in</a>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold">
+                Monthly Standard
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-label-sm font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                Expiring in 4d
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-label-md text-label-md text-primary font-bold">04 Nov 2024</span>
+<span class="block font-body-sm text-[11px] text-outline">In grace period</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-sm text-body-sm text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-outline">schedule</span>
+                1h ago
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">₹89,450</span>
+<span class="block font-body-sm text-[11px] text-outline">189 bills</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="inline-flex items-center gap-space-xs">
+<button class="px-2.5 py-1 rounded bg-primary text-on-primary font-label-sm text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity" type="button">
+                  Renew
+                </button>
+<div class="relative">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" data-dropdown-trigger="" onclick="toggleMenu('menu-row-3')" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+<div class="hidden absolute right-0 mt-1 w-48 bg-surface-container-lowest rounded-lg shadow-xl p-1 z-30 text-left" data-dropdown-menu="" id="menu-row-3">
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit Details
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span> Send Payment Link
+                    </button>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 4: Coastal Spice Kiosk (Suspended / Overdue) -->
+<tr class="hover:bg-surface-container-low transition-colors group bg-error-container/20">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-error font-headline-sm font-bold shrink-0 shadow-sm">
+                  CS
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">Coastal Spice Kiosk</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-[10px] font-bold">1 Terminal</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-outline">location_on</span>
+                    Pune • FC Road
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Pramod Joshi</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">+91 97640 22319</span>
+<a class="font-body-sm text-[11px] text-primary hover:underline truncate" href="mailto:p.joshi@coastalspice.co">p.joshi@coastalspice.co</a>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold">
+                Monthly Standard
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[14px]">block</span>
+                Suspended
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-label-md text-label-md text-error font-bold">18 Apr 2024</span>
+<span class="block font-body-sm text-[11px] text-error font-semibold">Overdue (Payment Failed)</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-sm text-body-sm text-error font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                9d ago (Halted)
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-headline-sm text-headline-sm text-outline font-bold">₹0</span>
+<span class="block font-body-sm text-[11px] text-error">Locked POS</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="inline-flex items-center gap-space-xs">
+<button class="px-2.5 py-1 rounded bg-tertiary text-on-tertiary font-label-sm text-label-sm font-bold hover:opacity-90 transition-opacity" type="button">
+                  Reactivate
+                </button>
+<div class="relative">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" data-dropdown-trigger="" onclick="toggleMenu('menu-row-4')" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+<div class="hidden absolute right-0 mt-1 w-48 bg-surface-container-lowest rounded-lg shadow-xl p-1 z-30 text-left" data-dropdown-menu="" id="menu-row-4">
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit Details
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span> Resend Invoice
+                    </button>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 5: Spice Garden CP -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary font-headline-sm font-bold shrink-0 shadow-sm">
+                  SG
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">Spice Garden CP</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-[10px] font-bold">3 Outlets</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-outline">location_on</span>
+                    Delhi NCR • Connaught Place
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Manish Kapoor</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">+91 98105 77123</span>
+<a class="font-body-sm text-[11px] text-primary hover:underline truncate" href="mailto:cp@spicegarden.co.in">cp@spicegarden.co.in</a>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-bold">
+                Yearly Pro
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-tertiary font-label-sm text-label-sm font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                Active
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-label-md text-label-md text-on-surface">15 Jan 2026</span>
+<span class="block font-body-sm text-[11px] text-outline">Multi-year</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-sm text-body-sm text-tertiary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">network_ping</span>
+                2h ago
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">₹64,200</span>
+<span class="block font-body-sm text-[11px] text-outline">142 bills</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="inline-flex items-center gap-space-xs">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold transition-colors" type="button">
+                  View
+                </button>
+<div class="relative">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" data-dropdown-trigger="" onclick="toggleMenu('menu-row-5')" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+<div class="hidden absolute right-0 mt-1 w-48 bg-surface-container-lowest rounded-lg shadow-xl p-1 z-30 text-left" data-dropdown-menu="" id="menu-row-5">
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit Details
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span> Send Payment Link
+                    </button>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 6: Dosa Plaza Indiranagar -->
+<tr class="hover:bg-surface-container-low transition-colors group bg-surface-container-lowest">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface font-headline-sm font-bold shrink-0 shadow-sm">
+                  DP
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">Dosa Plaza Indiranagar</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-[10px] font-bold">2 Outlets</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-outline">location_on</span>
+                    Bengaluru • Koramangala
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Venkatesh Murthy</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">+91 99801 33412</span>
+<a class="font-body-sm text-[11px] text-primary hover:underline truncate" href="mailto:v.murthy@dosaplaza.in">v.murthy@dosaplaza.in</a>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-bold">
+                Yearly Pro
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-tertiary font-label-sm text-label-sm font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+                Active
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-label-md text-label-md text-on-surface">19 Sep 2025</span>
+<span class="block font-body-sm text-[11px] text-outline">320d left</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-sm text-body-sm text-tertiary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">network_ping</span>
+                5m ago
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">₹78,120</span>
+<span class="block font-body-sm text-[11px] text-tertiary font-semibold">208 bills</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="inline-flex items-center gap-space-xs">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold transition-colors" type="button">
+                  View
+                </button>
+<div class="relative">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" data-dropdown-trigger="" onclick="toggleMenu('menu-row-6')" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+<div class="hidden absolute right-0 mt-1 w-48 bg-surface-container-lowest rounded-lg shadow-xl p-1 z-30 text-left" data-dropdown-menu="" id="menu-row-6">
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit Details
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span> Send Payment Link
+                    </button>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 7: Karim's Heritage Dining -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary font-headline-sm font-bold shrink-0 shadow-sm">
+                  KH
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">Karim's Heritage Dining</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-[10px] font-bold">4 Outlets</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-outline">location_on</span>
+                    Delhi NCR • Chandni Chowk
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Zeeshan Ahmed</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">+91 98119 00411</span>
+<a class="font-body-sm text-[11px] text-primary hover:underline truncate" href="mailto:admin@karimsheritage.com">admin@karimsheritage.com</a>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-inverse-surface text-inverse-on-surface font-label-sm text-label-sm font-bold">
+                Lifetime POS
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-tertiary font-label-sm text-label-sm font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                Active
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-label-md text-label-md text-on-surface">Lifetime</span>
+<span class="block font-body-sm text-[11px] text-outline">Verified</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-sm text-body-sm text-tertiary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">network_ping</span>
+                45m ago
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">₹1,95,300</span>
+<span class="block font-body-sm text-[11px] text-tertiary font-semibold">410 bills</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="inline-flex items-center gap-space-xs">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold transition-colors" type="button">
+                  View
+                </button>
+<div class="relative">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" data-dropdown-trigger="" onclick="toggleMenu('menu-row-7')" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+<div class="hidden absolute right-0 mt-1 w-48 bg-surface-container-lowest rounded-lg shadow-xl p-1 z-30 text-left" data-dropdown-menu="" id="menu-row-7">
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit Details
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span> Send Payment Link
+                    </button>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 8: Hotel Annapurna -->
+<tr class="hover:bg-surface-container-low transition-colors group bg-surface-container-lowest">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface font-headline-sm font-bold shrink-0 shadow-sm">
+                  HA
+                </div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold truncate">Hotel Annapurna</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-[10px] font-bold">1 Terminal</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-outline">location_on</span>
+                    Bengaluru • Malleshwaram
+                  </span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Ramanathan Iyer</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">+91 94480 55678</span>
+<a class="font-body-sm text-[11px] text-primary hover:underline truncate" href="mailto:iyer@hotelannapurna.in">iyer@hotelannapurna.in</a>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold">
+                Monthly Standard
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-tertiary font-label-sm text-label-sm font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                Active
+              </span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-label-md text-label-md text-on-surface">12 Feb 2025</span>
+<span class="block font-body-sm text-[11px] text-outline">Auto-debit</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="font-body-sm text-body-sm text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-outline">schedule</span>
+                3h ago
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">₹38,900</span>
+<span class="block font-body-sm text-[11px] text-outline">98 bills</span>
+</td>
+<td class="py-space-md px-space-lg text-center">
+<div class="inline-flex items-center gap-space-xs">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold transition-colors" type="button">
+                  View
+                </button>
+<div class="relative">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-container-high transition-colors" data-dropdown-trigger="" onclick="toggleMenu('menu-row-8')" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+<div class="hidden absolute right-0 mt-1 w-48 bg-surface-container-lowest rounded-lg shadow-xl p-1 z-30 text-left" data-dropdown-menu="" id="menu-row-8">
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit Details
+                    </button>
+<button class="w-full text-left px-3 py-1.5 text-on-surface hover:bg-surface-container rounded font-label-md text-label-md flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span> Send Payment Link
+                    </button>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Mobile Responsive Cards View (Shown on <768px screens) -->
+<div class="md:hidden flex flex-col divide-y divide-surface-container-high">
+<!-- Mobile Card 1 -->
+<div class="p-space-md flex flex-col gap-space-sm bg-surface">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary font-headline-sm font-bold">PG</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Punjab Grill Express</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Delhi NCR • Cyber Hub • 5 Outlets</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-tertiary font-label-sm text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span> Active
+          </span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs bg-surface-container-low p-space-sm rounded-lg text-body-sm font-body-sm">
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Plan</span>
+<span class="font-label-sm text-primary font-bold">Yearly Pro</span>
+</div>
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Today's Sales</span>
+<span class="font-label-sm text-on-surface font-bold">₹1,42,800 (312 bills)</span>
+</div>
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Owner</span>
+<span class="text-on-surface">Harpreet (+91 98112...)</span>
+</div>
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Heartbeat</span>
+<span class="text-tertiary font-semibold">12m ago</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Exp: 28 Mar 2025</span>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container font-label-sm text-label-sm text-on-surface font-bold" type="button">View</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container font-label-sm text-label-sm text-on-surface" type="button"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</div>
+</div>
+</div>
+<!-- Mobile Card 2: The Saffron Lounge (Expiring) -->
+<div class="p-space-md flex flex-col gap-space-sm bg-surface">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary font-headline-sm font-bold">SL</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">The Saffron Lounge</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Mumbai • Bandra West • 1 Terminal</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-[11px] font-bold">
+            Expiring in 4d
+          </span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs bg-surface-container-low p-space-sm rounded-lg text-body-sm font-body-sm">
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Plan</span>
+<span class="font-label-sm text-on-surface-variant font-bold">Monthly Standard</span>
+</div>
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Today's Sales</span>
+<span class="font-label-sm text-on-surface font-bold">₹89,450 (189 bills)</span>
+</div>
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Owner</span>
+<span class="text-on-surface">Ananya (+91 98200...)</span>
+</div>
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Heartbeat</span>
+<span class="text-on-surface-variant">1h ago</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-body-sm text-body-sm text-primary font-bold">Exp: 04 Nov 2024</span>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-bold shadow-sm" type="button">Renew</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container font-label-sm text-label-sm text-on-surface" type="button"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</div>
+</div>
+</div>
+<!-- Mobile Card 3: Coastal Spice Kiosk (Suspended) -->
+<div class="p-space-md flex flex-col gap-space-sm bg-error-container/20">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-error font-headline-sm font-bold">CS</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Coastal Spice Kiosk</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Pune • FC Road • 1 Terminal</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-[11px] font-bold">
+            Suspended
+          </span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs bg-surface-container-low p-space-sm rounded-lg text-body-sm font-body-sm">
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Status</span>
+<span class="font-label-sm text-error font-bold">Overdue (Failed)</span>
+</div>
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Today's Sales</span>
+<span class="font-label-sm text-outline font-bold">₹0 (Halted)</span>
+</div>
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Owner</span>
+<span class="text-on-surface">Pramod (+91 97640...)</span>
+</div>
+<div>
+<span class="text-outline block text-[10px] uppercase font-bold">Heartbeat</span>
+<span class="text-error font-bold">9d ago (Alert)</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-body-sm text-body-sm text-error font-bold">Expired: 18 Apr</span>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg bg-tertiary text-on-tertiary font-label-sm text-label-sm font-bold shadow-sm" type="button">Reactivate</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container font-label-sm text-label-sm text-on-surface" type="button"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination & Table Footer Dock -->
+<div class="bg-surface-container px-space-lg py-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md border-t border-surface-container-high">
+<div class="flex items-center gap-space-md">
+<span class="font-body-sm text-body-sm text-on-surface-variant">
+          Showing <span class="font-bold text-on-surface">1</span> to <span class="font-bold text-on-surface">8</span> of <span class="font-bold text-on-surface">48</span> restaurants
+        </span>
+<div class="hidden sm:flex items-center gap-space-xs text-body-sm text-on-surface-variant">
+<span>•</span>
+<select class="bg-surface-container-high text-on-surface font-label-sm text-label-sm rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer">
+<option>8 per page</option>
+<option>10 per page</option>
+<option>25 per page</option>
+<option>50 per page</option>
+</select>
+</div>
+</div>
+<!-- Pagination Buttons -->
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded-lg text-outline bg-surface-container opacity-50 cursor-not-allowed" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-bold shadow-sm" type="button">1</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high font-label-sm text-label-sm font-semibold transition-colors" type="button">2</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high font-label-sm text-label-sm font-semibold transition-colors" type="button">3</button>
+<button class="w-8 h-8 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high font-label-sm text-label-sm font-semibold transition-colors" type="button">4</button>
+<span class="px-1 text-outline font-body-sm">…</span>
+<button class="w-8 h-8 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high font-label-sm text-label-sm font-semibold transition-colors" type="button">6</button>
+<button class="p-1.5 rounded-lg text-on-surface bg-surface-container hover:bg-surface-container-high transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Quick Operations / Fleet Health Status Banner -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex flex-col md:flex-row items-center justify-between gap-space-md shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-9 h-9 rounded-full bg-tertiary-container/20 text-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-on-surface">Auto-Backup &amp; GST Ledger Sync Intact</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Last complete cloud snapshot verified 14 minutes ago for all 42 active client nodes.</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm font-bold transition-colors" type="button">
+        View Audit Trail
+      </button>
+<button class="px-space-md py-1.5 rounded-lg bg-primary text-on-primary hover:opacity-95 text-label-sm font-label-sm font-bold transition-opacity" type="button">
+        Force Fleet Sync
+      </button>
+</div>
+</div>
+</div></main></div></body></html>

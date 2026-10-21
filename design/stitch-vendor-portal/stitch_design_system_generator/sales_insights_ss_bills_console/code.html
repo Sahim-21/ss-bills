@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-tertiary-fixed":"#001a41","background":"#fff8f6","surface-dim":"#dbdad7","secondary-container":"#e4dedb","inverse-on-surface":"#f2f1ee","inverse-surface":"#2f312f","surface-tint":"#a43e03","error-container":"#ffdad6","on-error-container":"#93000a","secondary-fixed-dim":"#cac6c2","surface-container":"#efeeeb","on-surface":"#241915","surface-container-high":"#fae4dc","on-surface-variant":"#584239","surface-container-low":"#f4f3f0","surface-container-highest":"#f4ded6","on-secondary-fixed":"#1d1b19","on-tertiary":"#ffffff","on-secondary":"#ffffff","surface":"#faf9f6","primary-container":"#c64f0e","on-primary-container":"#fffbff","inverse-primary":"#ffb597","tertiary-fixed-dim":"#adc6ff","surface-bright":"#faf9f6","surface-container-lowest":"#ffffff","on-tertiary-fixed-variant":"#004494","on-tertiary-container":"#f7fff3","tertiary-container":"#128641","error":"#ba1a1a","on-primary":"#ffffff","on-primary-fixed-variant":"#7d2d00","on-background":"#241915","tertiary-fixed":"#d8e2ff","on-error":"#ffffff","primary-fixed":"#ffdbcd","primary":"#792b00","on-primary-fixed":"#360f00","on-secondary-container":"#65625f","primary-fixed-dim":"#ffb597","secondary-fixed":"#e7e1dd","surface-variant":"#f4ded6","outline-variant":"#dec0b5","tertiary":"#006b31","outline":"#8c7167","secondary":"#615e5b","on-secondary-fixed-variant":"#494644"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-lg":"1rem","space-md":"0.75rem","margin":"1rem","gutter-lg":"1.25rem","space-sm":"0.5rem","space-xs":"0.25rem","gutter-sm":"0.75rem","space-xl":"1.5rem","margin-desktop":"1.5rem","gutter":"1rem"},fontFamily:{"price-md":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"price-lg":["Plus Jakarta Sans"],"price-hero":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"]},fontSize:{"price-md":["15px",{lineHeight:"20px",fontWeight:"700"}],"headline-sm":["16px",{lineHeight:"24px",fontWeight:"700"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.04em",fontWeight:"700"}],"label-md":["12px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"600"}],"price-lg":["22px",{lineHeight:"28px",fontWeight:"700"}],"price-hero":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"800"}],"headline-lg":["24px",{lineHeight:"32px",letterSpacing:"-0.01em",fontWeight:"700"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"500"}],"headline-xl":["32px",{lineHeight:"40px",letterSpacing:"-0.02em",fontWeight:"800"}],"headline-md":["20px",{lineHeight:"28px",fontWeight:"700"}],"label-lg":["14px",{lineHeight:"20px",letterSpacing:"0.01em",fontWeight:"600"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"body-sm":["12px",{lineHeight:"16px",fontWeight:"400"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-space-lg"><div class="flex flex-col"><div class="flex items-center gap-space-sm px-space-xl pb-space-xl"><img alt="SS Bills Console Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VMStlFdgzXLyoBCt-W445y2jALX67qQjtY9N-wADSyTXsOmDmhsLpfqzHXJ_PMkXLQ5B96fwU3-1jSN-tSjVJpTOQXesSNr9Ll8yefwuKwgvIr4e0utUJsyLveu3a6LIZa6xmn7Y5USPVZjTETewcGlWPQ9LTHte1bAjTu1ffItKZfbFI5Avfzl3Jr3vKGcbl3YXOO86RWamgYeqJTvXR_6tqC2NE6K6L6yOa9Mz4PDCkhj0zoK7vnewE"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight">SS Bills</span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Vendor Console</span></div></div><div class="px-space-xl mb-space-sm"><span class="font-label-sm text-label-sm text-outline uppercase">Platform Menu</span></div><nav class="flex flex-col gap-space-xs px-space-md" data-active-classes="bg-primary text-on-primary font-label-lg shadow-sm"><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="overview" href="#">Overview</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="clients" href="#">Clients</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="licenses" href="#">Licenses</a><a aria-current="page" class="flex items-center px-space-md py-space-sm rounded-lg transition-all bg-primary text-on-primary font-label-lg shadow-sm" data-path="sales-insights" href="#">Sales Insights</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="activity-log" href="#">Activity Log</a><a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface transition-all font-label-lg text-label-lg" data-path="settings" href="#">Settings</a></nav></div><div class="px-space-md"><div class="bg-surface-container rounded-xl p-space-md flex flex-col gap-space-xs"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant">POS Core v4.2</span><span class="font-label-sm text-label-sm text-tertiary font-bold">PROD</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">842 active restaurant nodes connected.</p></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-xl"><div class="flex items-center gap-space-lg flex-1 max-w-xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span><input class="w-full bg-surface-container-low text-on-surface placeholder-outline pl-10 pr-4 py-2 rounded-lg font-body-md text-body-md focus:outline-none focus:ring-1 focus:ring-primary shadow-inner" placeholder="Search restaurant, city, license key…" type="text"/></div></div><div class="flex items-center gap-space-lg"><div class="inline-flex items-center gap-space-xs px-space-md py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-tertiary font-bold"><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>Cloud Sync Online</div><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1 right-1 flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-primary font-label-sm text-[10px] text-on-primary font-bold">3</span></button><div class="flex items-center gap-space-md pl-space-sm"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-lg text-label-lg text-on-surface">Rajesh Verma</span><span class="font-body-sm text-body-sm text-on-surface-variant">Super Admin</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-background min-h-screen w-full px-space-xl py-space-xl"><div class="flex flex-col w-full">
+<!-- Page Header & Action Center -->
+<div class="flex flex-col gap-space-lg mb-space-xl">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+<div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-1">
+<span>Enterprise Telemetry</span>
+<span>/</span>
+<span class="text-primary font-bold">POS Analytics Cluster</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Sales Insights &amp; Financial Telemetry</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 max-w-3xl">
+          Consolidated POS billing metrics, client revenue performance, and period-over-period growth across 48 restaurant nodes.
+        </p>
+</div>
+<!-- Export tools & Period Actions -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<label class="flex items-center gap-space-xs bg-surface-container-low px-space-md py-2 rounded-lg cursor-pointer hover:bg-surface-container select-none transition-colors">
+<input checked="" class="accent-primary rounded w-4 h-4 cursor-pointer" type="checkbox"/>
+<span class="font-label-md text-label-md text-on-surface">Compare Periods</span>
+</label>
+<button class="flex items-center gap-space-xs bg-primary text-on-primary px-space-md py-2 rounded-lg font-label-md text-label-md shadow-sm hover:opacity-95 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>Download Report (CSV / PDF)</span>
+</button>
+</div>
+</div>
+<!-- Controls Row: Segmented Range Chips -->
+<div class="flex items-center justify-between flex-wrap gap-space-md bg-surface-container-low p-space-xs rounded-xl">
+<div class="flex items-center gap-1 overflow-x-auto py-1">
+<button class="px-space-md py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all whitespace-nowrap" type="button">Today</button>
+<button class="px-space-md py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all whitespace-nowrap" type="button">Last 7 Days</button>
+<button class="px-space-md py-1.5 rounded-full font-label-md text-label-md bg-primary text-on-primary shadow-sm font-bold whitespace-nowrap" type="button">Last 30 Days</button>
+<button class="px-space-md py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all whitespace-nowrap" type="button">Q3 FY24</button>
+<button class="px-space-md py-1.5 rounded-full font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all whitespace-nowrap" type="button">YTD</button>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container px-space-md py-1.5 rounded-lg text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[18px]">calendar_today</span>
+<span class="font-label-sm text-label-sm font-semibold tracking-wide uppercase text-on-surface">Custom:</span>
+<span class="font-body-sm text-body-sm font-bold text-on-surface">01 Feb 2024 – 02 Mar 2024</span>
+<span class="material-symbols-outlined text-[16px] text-outline cursor-pointer hover:text-on-surface">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Top KPI Summary Strip -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md mb-space-xl">
+<!-- Card 1: Aggregate GMV -->
+<div class="bg-surface-container-low p-space-lg rounded-xl flex flex-col justify-between shadow-sm relative overflow-hidden group">
+<div class="absolute -right-4 -bottom-4 w-20 h-20 bg-primary/5 rounded-full pointer-events-none"></div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wide">Aggregate GMV</span>
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+          +14.8%
+        </span>
+</div>
+<div>
+<div class="font-price-hero text-price-hero text-on-surface tracking-tight">₹1,42,85,600</div>
+<div class="flex items-center justify-between mt-2 pt-2 text-on-surface-variant font-body-sm text-body-sm">
+<span>Avg Daily GMV</span>
+<span class="font-price-md text-price-md text-on-surface">₹4.76 Lakhs</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Total Bills Processed -->
+<div class="bg-surface-container-low p-space-lg rounded-xl flex flex-col justify-between shadow-sm relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 w-20 h-20 bg-tertiary/5 rounded-full pointer-events-none"></div>
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wide">Bills Processed</span>
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+          +8.2%
+        </span>
+</div>
+<div>
+<div class="font-price-hero text-price-hero text-on-surface tracking-tight">48,920</div>
+<div class="flex items-center justify-between mt-2 pt-2 text-on-surface-variant font-body-sm text-body-sm">
+<span>Avg Ticket Size</span>
+<span class="font-price-md text-price-md text-on-surface">₹292.02</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Top Revenue Cluster -->
+<div class="bg-surface-container-low p-space-lg rounded-xl flex flex-col justify-between shadow-sm relative overflow-hidden">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wide">Top Revenue Clusters</span>
+<span class="material-symbols-outlined text-primary text-[20px]">location_on</span>
+</div>
+<div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg text-on-surface">Delhi NCR</span>
+<span class="font-price-lg text-price-lg text-primary">₹54.2L</span>
+</div>
+<div class="flex items-center justify-between mt-2 pt-2 text-on-surface-variant font-body-sm text-body-sm">
+<span>2nd: Bengaluru</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">₹38.9L</span>
+</div>
+</div>
+</div>
+<!-- Card 4: Payment Mode Mix -->
+<div class="bg-surface-container-low p-space-lg rounded-xl flex flex-col justify-between shadow-sm relative overflow-hidden">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wide">Payment Mode Mix</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">Instant Settle</span>
+</div>
+<div>
+<div class="flex items-center justify-between font-label-sm text-label-sm mb-2 text-on-surface font-bold">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary"></span>UPI 62%</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-secondary"></span>Cash 26%</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-outline"></span>Card 12%</span>
+</div>
+<div class="w-full h-3 rounded-full bg-surface-container flex overflow-hidden">
+<div class="bg-primary h-full" style="width: 62%;"></div>
+<div class="bg-secondary h-full" style="width: 26%;"></div>
+<div class="bg-outline h-full" style="width: 12%;"></div>
+</div>
+<div class="flex items-center justify-between mt-2 pt-2 text-on-surface-variant font-body-sm text-body-sm">
+<span>UPI Velocity</span>
+<span class="font-label-lg text-label-lg font-bold text-tertiary">30.3k txns</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Analytical Visualizations: Split View (60% / 40%) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg mb-space-xl items-stretch">
+<!-- Left Card: Combined Gross Sales Trend (approx 60% -> 7 Cols) -->
+<div class="lg:col-span-7 bg-surface-container-low p-space-xl rounded-xl flex flex-col justify-between shadow-sm">
+<div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-md">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline-md text-headline-md text-on-surface">Combined Gross Sales Trend</h2>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container font-semibold text-on-surface-variant">30D Velocity</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Aggregate continuous point-of-sale register volume</p>
+</div>
+<!-- Internal Pill Toggles -->
+<div class="flex items-center bg-surface-container p-1 rounded-lg self-start sm:self-auto">
+<button class="px-space-sm py-1 rounded-md bg-surface-container-lowest text-primary font-label-sm text-label-sm font-bold shadow-sm" type="button">Gross Sales</button>
+<button class="px-space-sm py-1 rounded-md text-on-surface-variant font-label-sm text-label-sm hover:text-on-surface" type="button">Bill Volume</button>
+<button class="px-space-sm py-1 rounded-md text-on-surface-variant font-label-sm text-label-sm hover:text-on-surface" type="button">Avg AOV</button>
+</div>
+</div>
+<!-- Peak Milestone Banner -->
+<div class="flex items-center justify-between bg-surface-container-high/60 px-space-md py-2 rounded-lg mb-space-md text-on-surface">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">stars</span>
+<span class="font-label-md text-label-md font-bold">Peak Day: 14 Mar (₹5,82,400 • 1,940 bills)</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold uppercase tracking-wider">Holi Festive Surge</span>
+</div>
+<!-- SVG Line/Area Chart -->
+<div class="relative w-full h-64 mt-2">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 650 220">
+<defs>
+<lineargradient id="saffronGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#792b00" stop-opacity="0.38"></stop>
+<stop offset="70%" stop-color="#c64f0e" stop-opacity="0.08"></stop>
+<stop offset="100%" stop-color="#fff8f6" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Gridlines -->
+<line stroke="#dec0b5" stroke-dasharray="3,3" stroke-opacity="0.35" x1="0" x2="650" y1="30" y2="30"></line>
+<line stroke="#dec0b5" stroke-dasharray="3,3" stroke-opacity="0.35" x1="0" x2="650" y1="85" y2="85"></line>
+<line stroke="#dec0b5" stroke-dasharray="3,3" stroke-opacity="0.35" x1="0" x2="650" y1="140" y2="140"></line>
+<line stroke="#dec0b5" stroke-opacity="0.5" x1="0" x2="650" y1="195" y2="195"></line>
+<!-- Dotted baseline for previous period comparison -->
+<path d="M 0,160 Q 60,150 120,165 T 240,140 T 360,150 T 480,120 T 600,135 T 650,110" fill="none" opacity="0.65" stroke="#8c7167" stroke-dasharray="4,4" stroke-width="2"></path>
+<!-- Current Period Area Fill -->
+<path d="M 0,150 
+                     C 40,140 70,125 110,120 
+                     C 150,115 170,145 210,130 
+                     C 250,115 280,70 330,60 
+                     C 380,50 410,105 450,90 
+                     C 490,75 520,35 560,25 
+                     C 600,18 630,70 650,55 
+                     L 650,195 L 0,195 Z" fill="url(#saffronGradient)"></path>
+<!-- Current Period Primary Curve Line -->
+<path d="M 0,150 
+                     C 40,140 70,125 110,120 
+                     C 150,115 170,145 210,130 
+                     C 250,115 280,70 330,60 
+                     C 380,50 410,105 450,90 
+                     C 490,75 520,35 560,25 
+                     C 600,18 630,70 650,55" fill="none" stroke="#792b00" stroke-linecap="round" stroke-width="3"></path>
+<!-- Data Point Callouts: Weekend Peak -->
+<g transform="translate(330, 60)">
+<circle fill="#792b00" r="4.5" stroke="#fff8f6" stroke-width="2"></circle>
+</g>
+<g transform="translate(560, 25)">
+<circle class="animate-pulse" fill="#792b00" r="6" stroke="#fff8f6" stroke-width="2.5"></circle>
+<rect fill="#241915" height="22" rx="4" width="84" x="-42" y="-30"></rect>
+<text fill="#ffffff" font-family="Plus Jakarta Sans" font-size="10" font-weight="700" text-anchor="middle" x="0" y="-15">₹5.82L (Peak)</text>
+</g>
+</svg>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm mt-3 pt-2">
+<span>01 Feb</span>
+<span>07 Feb (Sat)</span>
+<span>14 Feb (Sat)</span>
+<span>21 Feb</span>
+<span>28 Feb</span>
+<span>02 Mar</span>
+</div>
+</div>
+<div class="flex items-center gap-space-lg pt-space-md mt-space-md border-t-0 bg-surface-container/50 px-space-md py-2 rounded-lg">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Current 30 Days (Active)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-0.5 border-t border-dashed border-outline"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Prev 30-Day Benchmark</span>
+</div>
+<div class="ml-auto font-label-sm text-label-sm text-tertiary font-bold">+18.2% vs Baseline Avg</div>
+</div>
+</div>
+<!-- Right Card: Client Revenue Comparison (approx 40% -> 5 Cols) -->
+<div class="lg:col-span-5 bg-surface-container-low p-space-xl rounded-xl flex flex-col justify-between shadow-sm">
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Client Revenue Leaderboard</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Top 7 contributors ranked by gross GMV</p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold bg-surface-container px-2.5 py-1 rounded-full">Top 7 Nodes</span>
+</div>
+<!-- Horizontal Bar Leaderboard List -->
+<div class="flex flex-col gap-3.5">
+<!-- Item 1 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-md text-label-md">
+<span class="font-bold text-on-surface truncate">1. Punjab Grill Express <span class="font-normal text-on-surface-variant">(Delhi NCR)</span></span>
+<div class="flex items-center gap-1.5 shrink-0">
+<span class="font-price-md text-price-md text-on-surface">₹28,45,200</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">+18.4%</span>
+</div>
+</div>
+<div class="w-full h-2.5 rounded-full bg-surface-container overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 100%;"></div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-md text-label-md">
+<span class="font-bold text-on-surface truncate">2. The Saffron Lounge <span class="font-normal text-on-surface-variant">(Mumbai)</span></span>
+<div class="flex items-center gap-1.5 shrink-0">
+<span class="font-price-md text-price-md text-on-surface">₹21,80,900</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">+12.1%</span>
+</div>
+</div>
+<div class="w-full h-2.5 rounded-full bg-surface-container overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 76.6%;"></div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-md text-label-md">
+<span class="font-bold text-on-surface truncate">3. Dosa Plaza Indiranagar <span class="font-normal text-on-surface-variant">(Bengaluru)</span></span>
+<div class="flex items-center gap-1.5 shrink-0">
+<span class="font-price-md text-price-md text-on-surface">₹18,40,000</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">+9.5%</span>
+</div>
+</div>
+<div class="w-full h-2.5 rounded-full bg-surface-container overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 64.6%;"></div>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-md text-label-md">
+<span class="font-bold text-on-surface truncate">4. Spice Garden <span class="font-normal text-on-surface-variant">(Hyderabad)</span></span>
+<div class="flex items-center gap-1.5 shrink-0">
+<span class="font-price-md text-price-md text-on-surface">₹14,25,300</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">+14.2%</span>
+</div>
+</div>
+<div class="w-full h-2.5 rounded-full bg-surface-container overflow-hidden">
+<div class="bg-primary-container/85 h-full rounded-full" style="width: 50.1%;"></div>
+</div>
+</div>
+<!-- Item 5 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-md text-label-md">
+<span class="font-bold text-on-surface truncate">5. Karim's Heritage <span class="font-normal text-on-surface-variant">(Delhi)</span></span>
+<div class="flex items-center gap-1.5 shrink-0">
+<span class="font-price-md text-price-md text-on-surface">₹11,90,500</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">+6.0%</span>
+</div>
+</div>
+<div class="w-full h-2.5 rounded-full bg-surface-container overflow-hidden">
+<div class="bg-primary-container/70 h-full rounded-full" style="width: 41.8%;"></div>
+</div>
+</div>
+<!-- Item 6 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-md text-label-md">
+<span class="font-bold text-on-surface truncate">6. Bawarchi Grand <span class="font-normal text-on-surface-variant">(Hyderabad)</span></span>
+<div class="flex items-center gap-1.5 shrink-0">
+<span class="font-price-md text-price-md text-on-surface">₹10,42,000</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">+4.8%</span>
+</div>
+</div>
+<div class="w-full h-2.5 rounded-full bg-surface-container overflow-hidden">
+<div class="bg-primary-container/60 h-full rounded-full" style="width: 36.6%;"></div>
+</div>
+</div>
+<!-- Item 7 -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between font-label-md text-label-md">
+<span class="font-bold text-on-surface truncate">7. Peshawari Zaika <span class="font-normal text-on-surface-variant">(Mumbai)</span></span>
+<div class="flex items-center gap-1.5 shrink-0">
+<span class="font-price-md text-price-md text-on-surface">₹8,92,000</span>
+<span class="font-label-sm text-label-sm text-primary font-bold bg-surface-container-high px-1.5 rounded">New</span>
+</div>
+</div>
+<div class="w-full h-2.5 rounded-full bg-surface-container overflow-hidden">
+<div class="bg-primary-container/50 h-full rounded-full" style="width: 31.3%;"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-space-md mt-space-sm flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>Combined top 7 share: <strong class="text-on-surface">73.6% of GMV</strong></span>
+<button class="text-primary hover:underline font-bold inline-flex items-center gap-0.5" type="button">
+          View all 48 nodes
+          <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Detailed Client Performance Table Container -->
+<div class="bg-surface-container-low rounded-xl shadow-sm flex flex-col mb-space-xl overflow-hidden">
+<!-- Table Header Toolbar -->
+<div class="p-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Client Billing &amp; Growth Breakdown</h2>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Showing 8 of 48 active restaurants with real-time sync</span>
+</div>
+<!-- Search & Filters in Table -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="relative min-w-[260px]">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full bg-surface text-on-surface placeholder-outline pl-9 pr-3 py-1.5 rounded-lg font-body-sm text-body-sm focus:outline-none focus:ring-1 focus:ring-primary shadow-inner" placeholder="Filter client or city..." type="text"/>
+</div>
+<button class="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface font-label-sm text-label-sm text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+<span>Category Filter</span>
+</button>
+</div>
+</div>
+<!-- Table -->
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left font-body-sm text-body-sm">
+<thead>
+<tr class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-space-md px-space-lg">Restaurant &amp; Location</th>
+<th class="py-space-md px-space-md text-center">Nodes</th>
+<th class="py-space-md px-space-md text-right">Current Period GMV</th>
+<th class="py-space-md px-space-md text-right">Prev Period</th>
+<th class="py-space-md px-space-md text-center">Growth %</th>
+<th class="py-space-md px-space-md text-right">Total Bills</th>
+<th class="py-space-md px-space-md text-right">Avg AOV</th>
+<th class="py-space-md px-space-md">Top Selling Category</th>
+<th class="py-space-md px-space-lg text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-on-surface">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-9 h-9 rounded-lg bg-primary-container text-on-primary-container font-headline-sm text-headline-sm flex items-center justify-center font-bold">PG</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Punjab Grill Express</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Connaught Place, Delhi NCR</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-bold text-on-surface font-label-sm text-label-sm">4 POS</span>
+</td>
+<td class="py-space-md px-space-md text-right font-price-md text-price-md font-bold tabular-nums">₹28,45,200</td>
+<td class="py-space-md px-space-md text-right text-on-surface-variant tabular-nums">₹24,02,100</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[13px]">arrow_upward</span>
+                18.4%
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">7,240</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">₹392.98</td>
+<td class="py-space-md px-space-md">
+<span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">Biryani &amp; Kebabs</span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="text-primary hover:text-primary-container font-label-md text-label-md font-bold underline-offset-2 hover:underline" type="button">View Breakdown</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container/60 transition-colors bg-surface-container-low/40">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-9 h-9 rounded-lg bg-surface-tint text-surface font-headline-sm text-headline-sm flex items-center justify-center font-bold">SL</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">The Saffron Lounge</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Bandra West, Mumbai</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-bold text-on-surface font-label-sm text-label-sm">3 POS</span>
+</td>
+<td class="py-space-md px-space-md text-right font-price-md text-price-md font-bold tabular-nums">₹21,80,900</td>
+<td class="py-space-md px-space-md text-right text-on-surface-variant tabular-nums">₹19,45,000</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[13px]">arrow_upward</span>
+                12.1%
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">4,812</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">₹453.22</td>
+<td class="py-space-md px-space-md">
+<span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">Gourmet Starters</span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="text-primary hover:text-primary-container font-label-md text-label-md font-bold underline-offset-2 hover:underline" type="button">View Breakdown</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-9 h-9 rounded-lg bg-tertiary text-on-tertiary font-headline-sm text-headline-sm flex items-center justify-center font-bold">DP</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Dosa Plaza Indiranagar</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">100 Feet Rd, Bengaluru</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-bold text-on-surface font-label-sm text-label-sm">5 POS</span>
+</td>
+<td class="py-space-md px-space-md text-right font-price-md text-price-md font-bold tabular-nums">₹18,40,000</td>
+<td class="py-space-md px-space-md text-right text-on-surface-variant tabular-nums">₹16,80,000</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[13px]">arrow_upward</span>
+                9.5%
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">9,680</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">₹190.08</td>
+<td class="py-space-md px-space-md">
+<span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">South Indian Thali</span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="text-primary hover:text-primary-container font-label-md text-label-md font-bold underline-offset-2 hover:underline" type="button">View Breakdown</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container/60 transition-colors bg-surface-container-low/40">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-9 h-9 rounded-lg bg-primary text-on-primary font-headline-sm text-headline-sm flex items-center justify-center font-bold">SG</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Spice Garden</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Jubilee Hills, Hyderabad</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-bold text-on-surface font-label-sm text-label-sm">2 POS</span>
+</td>
+<td class="py-space-md px-space-md text-right font-price-md text-price-md font-bold tabular-nums">₹14,25,300</td>
+<td class="py-space-md px-space-md text-right text-on-surface-variant tabular-nums">₹12,48,000</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[13px]">arrow_upward</span>
+                14.2%
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">4,310</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">₹330.69</td>
+<td class="py-space-md px-space-md">
+<span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">Andhra Curries</span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="text-primary hover:text-primary-container font-label-md text-label-md font-bold underline-offset-2 hover:underline" type="button">View Breakdown</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-9 h-9 rounded-lg bg-secondary text-on-secondary font-headline-sm text-headline-sm flex items-center justify-center font-bold">KH</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Karim's Heritage</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Jama Masjid, Old Delhi</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-bold text-on-surface font-label-sm text-label-sm">3 POS</span>
+</td>
+<td class="py-space-md px-space-md text-right font-price-md text-price-md font-bold tabular-nums">₹11,90,500</td>
+<td class="py-space-md px-space-md text-right text-on-surface-variant tabular-nums">₹11,23,000</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[13px]">arrow_upward</span>
+                6.0%
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">3,720</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">₹320.02</td>
+<td class="py-space-md px-space-md">
+<span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">Mughlai Mains</span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="text-primary hover:text-primary-container font-label-md text-label-md font-bold underline-offset-2 hover:underline" type="button">View Breakdown</button>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-surface-container/60 transition-colors bg-surface-container-low/40">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-9 h-9 rounded-lg bg-surface-container-highest text-primary font-headline-sm text-headline-sm flex items-center justify-center font-bold">BG</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Bawarchi Grand</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">RTC X Roads, Hyderabad</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-bold text-on-surface font-label-sm text-label-sm">4 POS</span>
+</td>
+<td class="py-space-md px-space-md text-right font-price-md text-price-md font-bold tabular-nums">₹10,42,000</td>
+<td class="py-space-md px-space-md text-right text-on-surface-variant tabular-nums">₹9,94,000</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-tertiary-container text-on-tertiary-container font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[13px]">arrow_upward</span>
+                4.8%
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">3,950</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">₹263.79</td>
+<td class="py-space-md px-space-md">
+<span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">Dum Biryani Pots</span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="text-primary hover:text-primary-container font-label-md text-label-md font-bold underline-offset-2 hover:underline" type="button">View Breakdown</button>
+</td>
+</tr>
+<!-- Row 7 -->
+<tr class="hover:bg-surface-container/60 transition-colors">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-9 h-9 rounded-lg bg-surface-container text-on-surface font-headline-sm text-headline-sm flex items-center justify-center font-bold">PZ</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Peshawari Zaika</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Colaba, Mumbai</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-bold text-on-surface font-label-sm text-label-sm">2 POS</span>
+</td>
+<td class="py-space-md px-space-md text-right font-price-md text-price-md font-bold tabular-nums">₹8,92,000</td>
+<td class="py-space-md px-space-md text-right text-on-surface-variant tabular-nums">—</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-bold">
+                New Client
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">2,410</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">₹370.12</td>
+<td class="py-space-md px-space-md">
+<span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">Tandoori Platters</span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="text-primary hover:text-primary-container font-label-md text-label-md font-bold underline-offset-2 hover:underline" type="button">View Breakdown</button>
+</td>
+</tr>
+<!-- Row 8 (Negative Growth Example) -->
+<tr class="hover:bg-surface-container/60 transition-colors bg-surface-container-low/40">
+<td class="py-space-md px-space-lg">
+<div class="flex items-center gap-space-md">
+<div class="w-9 h-9 rounded-lg bg-surface-dim text-on-surface-variant font-headline-sm text-headline-sm flex items-center justify-center font-bold">HA</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Haldiram's Express</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sector 18, Noida</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-center">
+<span class="px-2 py-0.5 rounded-md bg-surface-container font-bold text-on-surface font-label-sm text-label-sm">3 POS</span>
+</td>
+<td class="py-space-md px-space-md text-right font-price-md text-price-md font-bold tabular-nums">₹7,14,000</td>
+<td class="py-space-md px-space-md text-right text-on-surface-variant tabular-nums">₹7,45,000</td>
+<td class="py-space-md px-space-md text-center">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[13px]">arrow_downward</span>
+                4.1%
+              </span>
+</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">3,110</td>
+<td class="py-space-md px-space-md text-right font-medium tabular-nums">₹229.58</td>
+<td class="py-space-md px-space-md">
+<span class="px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">Chaat &amp; Sweets</span>
+</td>
+<td class="py-space-md px-space-lg text-right">
+<button class="text-primary hover:text-primary-container font-label-md text-label-md font-bold underline-offset-2 hover:underline" type="button">View Breakdown</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="p-space-lg bg-surface-container flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md text-on-surface-variant font-body-sm text-body-sm">
+<span>Displaying <strong>1-8</strong> of <strong>48</strong> accounts</span>
+<span>•</span>
+<button class="text-primary hover:underline font-semibold" type="button">Export Filtered Data (.csv)</button>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded-lg hover:bg-surface text-outline disabled:opacity-40" disabled="" type="button">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center justify-center shadow-sm" type="button">1</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface text-on-surface font-label-md text-label-md flex items-center justify-center" type="button">2</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface text-on-surface font-label-md text-label-md flex items-center justify-center" type="button">3</button>
+<span class="px-1 text-outline">...</span>
+<button class="w-8 h-8 rounded-lg hover:bg-surface text-on-surface font-label-md text-label-md flex items-center justify-center" type="button">6</button>
+<button class="p-1 rounded-lg hover:bg-surface text-on-surface" type="button">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div></main></div></body></html>
