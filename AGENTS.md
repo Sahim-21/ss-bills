@@ -23,6 +23,7 @@ project (owned by us) holds only restaurant licenses and daily sales summaries.
 | [docs/PRICING.md](docs/PRICING.md) | Where plan prices live and what a change does to existing clients | Before touching prices |
 | [docs/RELEASING.md](docs/RELEASING.md) | Building the installer, code signing, publishing updates, rollback | Before building or shipping a release |
 | [docs/LEGAL_DRAFT.md](docs/LEGAL_DRAFT.md) | Draft terms and privacy notice, the verified data map, the owner's open legal questions | Before the first customer, or when data handling changes |
+| [docs/OWNER_GUIDE.md](docs/OWNER_GUIDE.md) | Guide for the two founders: the whole product, every screen, licences, console playbooks, release steps, demo script, honest gaps | Start here to learn the product; keep it current when features change |
 | [docs/BACKUP.md](docs/BACKUP.md) | Backing up and restoring the central Supabase database, the restore test, disaster recovery | Before touching migrations on the live project, or when asked about backups |
 
 ## Rules for keeping context up to date (mandatory)
