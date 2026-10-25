@@ -6,7 +6,7 @@
     "dev": "next dev -p 3100",
     "predev": "node scripts/sync-migrations.mjs",
     "build": "next build",
-    "prebuild": "node scripts/sync-migrations.mjs",
+    "prebuild": "node scripts/sync-migrations.mjs && node scripts/check-env.mjs",
     "lint": "eslint",
     "test": "vitest run",
     "typecheck": "node scripts/sync-migrations.mjs && next typegen && tsc --noEmit"

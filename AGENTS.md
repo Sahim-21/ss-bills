@@ -19,6 +19,8 @@ project (owned by us) holds only restaurant licenses and daily sales summaries.
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Every decision made (and open questions) with reasons | Before changing direction |
 | [docs/UI_DESIGN.md](docs/UI_DESIGN.md) | UI/UX direction, Stitch AI prompts, screen checklist, what was left out | Before building any screen |
 | [supabase/README.md](supabase/README.md) | Central backend: tables, access rules, set-up steps | Before touching the database or the portal |
+| [docs/HOSTING.md](docs/HOSTING.md) | Putting the Vendor Console on Cloudflare Pages: settings, headers, owner steps | Before hosting the portal |
+| [docs/PRICING.md](docs/PRICING.md) | Where plan prices live and what a change does to existing clients | Before touching prices |
 | [docs/RELEASING.md](docs/RELEASING.md) | Building the installer, code signing, publishing updates, rollback | Before building or shipping a release |
 | [docs/BACKUP.md](docs/BACKUP.md) | Backing up and restoring the central Supabase database, the restore test, disaster recovery | Before touching migrations on the live project, or when asked about backups |
 
