@@ -1,5 +1,5 @@
 // Stops a production build that would silently ship the browser demo or a dangerous key.
-// Runs before `next build`. On Cloudflare Pages (CF_PAGES=1) or with PORTAL_REQUIRE_LIVE=1 the Supabase values are mandatory.
+// Runs before `next build`. On Cloudflare (CF_PAGES=1 or WORKERS_CI=1) or with PORTAL_REQUIRE_LIVE=1 the Supabase values are mandatory.
 // A local `npm run build` without them still works (demo build) so tests and previews keep working.
 // Next reads .env.local itself; plain node does not, so mirror that for local builds.
 for (const f of [".env.local", ".env"]) {
@@ -11,7 +11,7 @@ for (const f of [".env.local", ".env"]) {
 }
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const strict = process.env.CF_PAGES === "1" || process.env.PORTAL_REQUIRE_LIVE === "1";
+const strict = process.env.CF_PAGES === "1" || process.env.WORKERS_CI === "1" || process.env.PORTAL_REQUIRE_LIVE === "1";
 const fail = (msg) => {
   console.error(`\nBUILD STOPPED: ${msg}\n`);
   process.exit(1);
