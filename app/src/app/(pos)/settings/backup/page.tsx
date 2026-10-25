@@ -17,6 +17,63 @@ interface BackupStatus {
   backups: BackupFile[];
 }
 
+interface CloudInfo {
+  savedAt: string | null;
+  error: string | null;
+  enforced: boolean;
+  activated: boolean;
+}
+
+/** The menu and settings copy kept in SS Bills' cloud (D-043): when it was last saved, and a button to save it now. */
+function CloudMenuCard() {
+  const [info, setInfo] = useState<CloudInfo | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    window.ssbills?.menu<CloudInfo>("cloudStatus").then((r) => alive && setInfo(r), () => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  async function saveNow() {
+    setBusy(true);
+    setNote(null);
+    try {
+      const r = await window.ssbills!.menu<{ ok: boolean; message: string | null; unchanged: boolean; savedAt: string | null; error: string | null }>("cloudSaveNow");
+      setInfo((i) => (i ? { ...i, savedAt: r.savedAt, error: r.error } : i));
+      setNote(r.ok ? (r.unchanged ? "Already up to date." : "Saved.") : null);
+    } catch (e) {
+      setNote(null);
+      setInfo((i) => (i ? { ...i, error: e instanceof Error ? e.message : String(e) } : i));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!info || !info.enforced || !info.activated) return null;
+  return (
+    <SettingsSection icon="cloud_sync" title="Menu & settings copy in SS Bills" subtitle="So a lost or replaced PC does not mean retyping your menu">
+      <div className="flex items-center gap-4">
+        <div className="flex-1">
+          <div className="text-label-sm uppercase text-muted">Last saved</div>
+          <div className="text-headline-sm">{info.savedAt ? fmtDateTime(info.savedAt) : "Not saved yet"}</div>
+          {info.error ? <div className="mt-1 text-body-sm text-error">Last problem: {info.error}. It tries again at the next check-in.</div> : note ? <div className="mt-1 text-body-sm text-tertiary">{note}</div> : null}
+        </div>
+        <Button variant="secondary" icon={busy ? "progress_activity" : "cloud_upload"} disabled={busy} onClick={() => void saveNow()}>
+          {busy ? "Saving…" : "Save now"}
+        </Button>
+      </div>
+      <p className="mt-3 text-body-sm text-muted">
+        Saved automatically a minute after you change the menu. It holds your menu, categories, tables, GST and receipt settings only: <b>never bills, staff or PINs</b>. On a new PC, activate with your
+        licence key and the setup screen offers to restore it. Bills still need the file backup below.
+      </p>
+    </SettingsSection>
+  );
+}
+
 const KIND_LABEL = { auto: "Automatic", manual: "Manual", "pre-restore": "Saved before a restore" } as const;
 const mb = (bytes: number) => (bytes / 1_048_576).toFixed(bytes < 1_048_576 ? 2 : 1);
 
@@ -82,6 +139,8 @@ export default function BackupSettingsPage() {
           <Icon name="restart_alt" className="text-[20px]" /> {restartMsg}
         </div>
       )}
+
+      <CloudMenuCard />
 
       <SettingsSection icon="settings_backup_restore" title="Backup & restore" subtitle="Your bills live on this PC. Keep regular copies in case the PC fails.">
         <div className="grid grid-cols-[1.2fr_1fr] gap-4">

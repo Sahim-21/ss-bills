@@ -5,6 +5,7 @@
 import { useState } from "react";
 import { bpToPercentLabel } from "@/lib/billing";
 import type { SsbillsApi } from "@/lib/desktop";
+import { CloudRestore } from "./cloud-restore";
 import { Button, Field, Icon, Toggle, cx, inputClass } from "./ui";
 
 const STEPS = [
@@ -122,6 +123,8 @@ export function SetupWizard({
       <div className="mx-auto max-w-3xl px-6 pb-10">
         <h1 className="text-center text-[34px] font-extrabold tracking-tight">Let&apos;s set up your restaurant</h1>
         <p className="mt-1 text-center text-body-lg text-muted">Four quick steps. You can change everything later in Settings.</p>
+
+        {step === 0 && <CloudRestore api={api} onDone={onDone} />}
 
         <ol className="mt-7 flex items-center justify-center gap-2" aria-label="Setup progress">
           {STEPS.map((s, i) => (

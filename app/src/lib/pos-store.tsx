@@ -67,6 +67,7 @@ type State = {
 };
 
 type Action =
+  | { type: "replaceCatalog"; categories: Category[]; menu: MenuItem[]; tables: DiningTable[] }
   | { type: "login"; userId: string }
   | { type: "logout" }
   | { type: "addItem"; item: MenuItem }
@@ -108,6 +109,8 @@ function parkCurrent(s: State): OpenBill[] {
 
 function reducer(s: State, a: Action): State {
   switch (a.type) {
+    case "replaceCatalog":
+      return { ...s, categories: a.categories, menu: a.menu, tables: a.tables };
     case "login":
       return { ...s, userId: a.userId, current: { ...s.current, createdBy: a.userId } };
     case "logout":
@@ -345,6 +348,8 @@ type Ctx = {
   dismissSaveError: () => void;
   /** True when changes are saved to the local database (desktop app). */
   persistent: boolean;
+  /** Re-read the menu, categories and tables from the database (after an import changed them behind the screen's back). */
+  reloadCatalog: () => Promise<void>;
 };
 
 const PosContext = createContext<Ctx | null>(null);
@@ -360,12 +365,18 @@ function usePersistence(
   state: State,
   api: SsbillsApi | null,
   enqueue: (job: () => Promise<unknown>) => void,
+  skipNextRef: { current: boolean },
 ) {
   const prev = useRef(state);
   useEffect(() => {
     const p = prev.current;
     prev.current = state;
     if (!api || p === state) return;
+    // A reload that mirrors what the database already holds must not be written back item by item.
+    if (skipNextRef.current) {
+      skipNextRef.current = false;
+      return;
+    }
 
     const changed = <T extends { id: string }>(next: T[], before: T[]) => {
       const old = new Map(before.map((x) => [x.id, x]));
@@ -387,7 +398,7 @@ function usePersistence(
     before.filter((b) => !nowIds.has(b.id)).forEach((b) => jobs.push(["deleteOpenBill", b.id]));
 
     for (const [name, arg] of jobs) enqueue(() => api.call(name, arg));
-  }, [state, api, enqueue]);
+  }, [state, api, enqueue, skipNextRef]);
 }
 
 function PosStore({ initial, api, children }: { initial: State; api: SsbillsApi | null; children: ReactNode }) {
@@ -402,7 +413,16 @@ function PosStore({ initial, api, children }: { initial: State; api: SsbillsApi 
       .catch((e: unknown) => setSaveError(e instanceof Error ? e.message : String(e)));
   }, []);
 
-  usePersistence(state, api, enqueue);
+  const skipSave = useRef(false);
+  usePersistence(state, api, enqueue, skipSave);
+
+  const reloadCatalog = async () => {
+    if (!api) return;
+    const fresh = await loadFromDatabase(api);
+    if (!fresh) return;
+    skipSave.current = true; // this state IS the database: nothing to save
+    dispatch({ type: "replaceCatalog", categories: fresh.categories, menu: fresh.menu, tables: fresh.tables });
+  };
 
   const user = state.staff.find((x) => x.id === state.userId) ?? null;
 
@@ -467,6 +487,7 @@ function PosStore({ initial, api, children }: { initial: State; api: SsbillsApi 
     verifyPin,
     saveError,
     dismissSaveError: () => setSaveError(null),
+    reloadCatalog,
     persistent: !!api,
   };
   return <PosContext.Provider value={value}>{children}</PosContext.Provider>;

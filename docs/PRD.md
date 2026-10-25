@@ -115,6 +115,8 @@ Priority: **P0** is required for the MVP, **P1** follows right after the MVP, an
 | S-5 | Data backup | P1 | **Built** (D-035): manual and daily automatic, folder or USB, restore with safety copy |
 | S-6 | First-run setup wizard | P0 | Added 2026-10-21. Restaurant details, GST, first Admin and PIN, starter categories, table count. Built |
 | S-7 | Table management | P0 | Added 2026-10-21. Add, rename, change seats, remove (not while it has an open bill). Built |
+| S-8 | Cloud copy of menu and settings, restored on a new PC | P1 | Added 2026-10-25 (D-043). Menu, categories, tables, GST and receipt settings only; never bills, staff or PINs. Built, applied to the live project and checked end to end there on 2026-10-25 |
+| S-9 | Menu import and export as CSV | P1 | Added 2026-10-25 (D-044). Preview before import, all or nothing, never deletes. Built |
 
 ### 5.7 Licensing and central sync (vendor side)
 

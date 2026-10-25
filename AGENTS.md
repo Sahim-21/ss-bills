@@ -20,6 +20,7 @@ project (owned by us) holds only restaurant licenses and daily sales summaries.
 | [docs/UI_DESIGN.md](docs/UI_DESIGN.md) | UI/UX direction, Stitch AI prompts, screen checklist, what was left out | Before building any screen |
 | [supabase/README.md](supabase/README.md) | Central backend: tables, access rules, set-up steps | Before touching the database or the portal |
 | [docs/RELEASING.md](docs/RELEASING.md) | Building the installer, code signing, publishing updates, rollback | Before building or shipping a release |
+| [docs/BACKUP.md](docs/BACKUP.md) | Backing up and restoring the central Supabase database, the restore test, disaster recovery | Before touching migrations on the live project, or when asked about backups |
 
 ## Rules for keeping context up to date (mandatory)
 
@@ -75,6 +76,8 @@ points the app at another server (tests use a fake one). `SSBILLS_BACKUP_DIR` ov
 regenerate the signing key pair once apps are installed** (D-031). The UI reaches these only through `window.ssbills.license` /
 `.backup`; it never supplies file paths or talks to the network.
 
+**Menu copy and CSV (main process):** `snapshot.cjs` (the cloud copy: build, hash, strict check), `menu-csv.cjs` (CSV parse, check, plan, export), `menu-service.cjs` (the only door: dialogs, tokens, restore). The copy never holds bills, staff or PINs (D-043); an import never deletes (D-044). The screen never supplies paths, rows or a menu copy.
+
 **Releases:** every release needs a higher `version` in `app/package.json`; a packaged app ignores `SSBILLS_LICENSE` / `SSBILLS_API_URL`; updates are checked from `updateUrl` in `license-config.json` and installed only when the app is closed. Read docs/RELEASING.md first.
 
 **Database rules:** the schema is in `app/electron/db/schema.cjs`. Never edit a released migration; add a new one.
@@ -88,7 +91,7 @@ Its backend is the SQL in `supabase/migrations/`. Run from `portal/`:
 | Command | What it does |
 |---|---|
 | `npm run dev` | Console at http://localhost:3100. With no `.env.local` it runs the **browser demo**: sign in with the pre-filled email, any password, code `123456` |
-| `npm test` | 85 tests: the migrations and the Edge Function logic against a real Postgres (PGlite), the demo adapter, CSV. No Supabase needed |
+| `npm test` | 125 tests: the migrations and the Edge Function logic against a real Postgres (PGlite), the demo adapter, CSV. No Supabase needed |
 | `npm run typecheck` / `npm run lint` / `npm run build` | Checks and the static export (`portal/out/`) |
 
 **Rules for the vendor side:**

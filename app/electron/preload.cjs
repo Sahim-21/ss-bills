@@ -19,6 +19,11 @@ contextBridge.exposeInMainWorld("ssbills", {
     ipcRenderer.invoke("app", name).catch((e) => {
       throw clean(e);
     }),
+  /** menu("findCloudCopy" | "restoreCloudCopy" | "cloudStatus" | "cloudSaveNow" | "exportCsv" | "importCsvPreview" | "importCsvApply", arg). See electron/menu-service.cjs. */
+  menu: (name, arg) =>
+    ipcRenderer.invoke("menu", name, arg).catch((e) => {
+      throw clean(e);
+    }),
   /** license("status" | "activate" | "syncNow", arg). See electron/license.cjs. */
   license: (name, arg) =>
     ipcRenderer.invoke("license", name, arg).catch((e) => {

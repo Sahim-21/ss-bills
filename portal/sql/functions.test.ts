@@ -3,7 +3,7 @@
 import type { PGlite } from "@electric-sql/pglite";
 import crypto from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { MAX_BODY_BYTES, handleActivate, handleSync, parseJsonBody, type Deps, type Reply } from "../../supabase/functions/_shared/handler";
+import { MAX_BODY_BYTES, MENU_MAX_BODY_BYTES, handleActivate, handleMenu, handleSync, parseJsonBody, type Deps, type Reply } from "../../supabase/functions/_shared/handler";
 import { makeSigner } from "../../supabase/functions/_shared/sign";
 import { addUser, freshDb, rpc, type Who } from "./harness";
 
@@ -39,7 +39,7 @@ beforeAll(async () => {
   const id = await addUser(db, "boss@ssbills.in", "super_admin", "Boss");
   boss.who = { role: "authenticated", uid: id };
   const c = await rpc<any>(db, boss.who, "public.vendor_create_client($1::jsonb)", [
-    JSON.stringify({ name: "Spice Garden", owner_name: "Manish", phone: "98105 77123", email: "o@sg.in", city: "Hyderabad", plan_id: "yearly" }),
+    JSON.stringify({ name: "Spice Garden", owner_name: "Manish", phone: "98105 77123", email: "o@sg.in", city: "Hyderabad", plan_id: "yearly", max_devices: 3 }), // several test PCs; plans default to one
   ]);
   key = c.license_key;
 }, 60_000); // PGlite starts slowly when several test files boot it at once
@@ -255,5 +255,107 @@ describe("request parsing (from the raw request text)", () => {
       expect(typeof r.body.code).toBe("string");
       expect(typeof r.body.message).toBe("string");
     }
+  });
+});
+
+describe("menu function (cloud copy of the menu and settings)", () => {
+  const snap = (over: Record<string, unknown> = {}) => ({
+    version: 1,
+    createdAt: "2026-10-25T10:00:00.000Z",
+    profile: { name: "Spice Garden", tagline: "", address: "1 Main Rd", phone: "1", gstin: "", fssai: "", hsnSac: "996331", receiptHeader: "x", receiptFooter: "y", showLogo: true, paperWidthMm: 80 },
+    tax: { gstRateBp: 500, pricesIncludeTax: false, serviceChargeEnabled: false, serviceChargeBp: 500 },
+    categories: [{ id: "c1", name: "Mains", sortOrder: 1 }],
+    menu: [{ id: "m1", categoryId: "c1", name: "Naan", shortCode: "NAN", pricePaise: 5000, veg: true, available: true }],
+    tables: [{ id: "t1", label: "T1", seats: 4 }],
+    ...over,
+  });
+  const menu = (b: unknown, ip: string) => handleMenu(b, ip, deps);
+  const asJson = (v: unknown) => JSON.parse(JSON.stringify(v));
+  let mkey = "";
+  const machine = "MENU-PC";
+
+  beforeAll(async () => {
+    const c = await rpc<any>(db, boss.who!, "public.vendor_create_client($1::jsonb)", [
+      JSON.stringify({ name: "Menu Test", owner_name: "M", phone: "1", email: "m@t.in", city: "Goa", plan_id: "monthly" }),
+    ]);
+    mkey = c.license_key;
+    expect((await handleActivate({ key: mkey, machineId: machine }, "30.0.0.1", deps)).status).toBe(200);
+  });
+
+  it("saves a menu copy, then restores it as a SIGNED answer naming this key and PC", async () => {
+    const put = await menu({ action: "put", key: mkey, machineId: machine, snapshot: snap() }, "31.0.0.1");
+    expect(put).toMatchObject({ status: 200, body: { ok: true, stored: true, unchanged: false } });
+    const get = await menu({ action: "get", key: mkey, machineId: machine }, "31.0.0.2");
+    expect(get.status).toBe(200);
+    expect(get.body.found).toBe(true);
+    expect(verifySig(get.body.payload as string, get.body.sig as string)).toBe(true);
+    const p = JSON.parse(get.body.payload as string);
+    expect(p).toMatchObject({ v: 1, kind: "menu", key: mkey, machine });
+    expect(p.snapshot).toEqual(asJson(snap()));
+  });
+
+  it("a restored copy that was tampered with fails verification", async () => {
+    const get = await menu({ action: "get", key: mkey, machineId: machine }, "31.0.0.3");
+    const forged = (get.body.payload as string).replace("Naan", "Evil");
+    expect(forged).not.toBe(get.body.payload);
+    expect(verifySig(forged, get.body.sig as string)).toBe(false);
+  });
+
+  it("saving the same menu again says unchanged; nothing found for a restaurant that never saved", async () => {
+    const again = await menu({ action: "put", key: mkey, machineId: machine, snapshot: snap({ createdAt: "2027-01-01T00:00:00.000Z" }) }, "31.0.0.4");
+    expect(again.body).toMatchObject({ ok: true, stored: false, unchanged: true });
+    const other = await rpc<any>(db, boss.who!, "public.vendor_create_client($1::jsonb)", [
+      JSON.stringify({ name: "Never Saved", owner_name: "N", phone: "1", email: "n@t.in", city: "Kochi", plan_id: "monthly" }),
+    ]);
+    await handleActivate({ key: other.license_key, machineId: "NS-PC" }, "30.0.0.2", deps);
+    expect((await menu({ action: "get", key: other.license_key, machineId: "NS-PC" }, "31.0.0.5")).body).toEqual({ ok: true, found: false });
+  });
+
+  it("refuses malformed requests before touching the database", async () => {
+    for (const bad of [null, [], "x", {}, { action: "put" }, { action: "wipe", key: mkey, machineId: machine }, { action: "get", key: mkey }, { action: "get", machineId: machine },
+      { action: "put", key: mkey, machineId: machine }, { action: "put", key: mkey, machineId: machine, snapshot: "text" }, { action: "put", key: mkey, machineId: machine, snapshot: [] },
+      { action: "get", key: "K".repeat(41), machineId: machine }, { action: "get", key: mkey, machineId: "m".repeat(201) }]) {
+      const r = await menu(bad, "32.0.0.1");
+      expect(r.status).toBe(400);
+      expect(r.body.code).toBe("bad_request");
+    }
+  });
+
+  it("passes on the database's refusals with the right status, and never a database error", async () => {
+    expect(await menu({ action: "get", key: "0000-0000-0000-0000", machineId: machine }, "33.0.0.1")).toMatchObject({ status: 404, body: { code: "invalid_key" } });
+    expect(await menu({ action: "get", key: mkey, machineId: "STRANGER-PC" }, "33.0.0.2")).toMatchObject({ status: 403, body: { code: "device_not_bound" } });
+    // a snapshot with a PIN inside is refused by the database
+    const withPin = snap({ menu: [{ id: "m1", categoryId: "c1", name: "Naan", shortCode: "N", pricePaise: 1, veg: true, available: true, pin: "1234" }] });
+    expect(await menu({ action: "put", key: mkey, machineId: machine, snapshot: withPin }, "33.0.0.3")).toMatchObject({ status: 400, body: { code: "bad_request" } });
+    const broken: Deps = { ...deps, rpc: async (name, args) => (name === "rate_limit_hit" ? deps.rpc(name, args) : { data: null, error: { message: 'relation "menu_snapshots" is secret' } }) };
+    const r = await handleMenu({ action: "get", key: mkey, machineId: machine }, "33.0.0.4", broken);
+    expect(r.status).toBe(500);
+    expect(JSON.stringify(r.body)).not.toContain("menu_snapshots");
+  });
+
+  it("a suspended licence cannot save or restore, and the answer says why", async () => {
+    const c = await rpc<any>(db, boss.who!, "public.vendor_create_client($1::jsonb)", [
+      JSON.stringify({ name: "Suspended Menu", owner_name: "S", phone: "1", email: "s@t.in", city: "Agra", plan_id: "monthly" }),
+    ]);
+    await handleActivate({ key: c.license_key, machineId: "SM-PC" }, "30.0.0.3", deps);
+    await menu({ action: "put", key: c.license_key, machineId: "SM-PC", snapshot: snap() }, "34.0.0.1");
+    await rpc(db, boss.who!, "public.vendor_suspend($1, 'unpaid')", [c.restaurant_id]);
+    expect(await menu({ action: "get", key: c.license_key, machineId: "SM-PC" }, "34.0.0.2")).toMatchObject({ status: 403, body: { code: "suspended" } });
+    expect(await menu({ action: "put", key: c.license_key, machineId: "SM-PC", snapshot: snap({ tables: [] }) }, "34.0.0.3")).toMatchObject({ status: 403, body: { code: "suspended" } });
+  });
+
+  it("limits restores to 10 an hour per PC and everything to 300 an hour per address", async () => {
+    let last = 0;
+    for (let i = 0; i < 12; i++) last = (await menu({ action: "get", key: mkey, machineId: machine }, `35.0.${i}.1`)).status;
+    expect(last).toBe(429);
+    let ipLast = 0;
+    for (let i = 0; i < 302; i++) ipLast = (await menu({ action: "get", key: "0000-0000-0000-0000", machineId: `X${i}` }, "36.0.0.1")).status;
+    expect(ipLast).toBe(429);
+  });
+
+  it("accepts a body up to the menu limit but not beyond, and the ordinary functions keep the small limit", () => {
+    expect(parseJsonBody("{" + '"a":"' + "x".repeat(900_000) + '"}', MENU_MAX_BODY_BYTES).ok).toBe(true);
+    expect(parseJsonBody("{" + '"a":"' + "x".repeat(1_200_000) + '"}', MENU_MAX_BODY_BYTES)).toMatchObject({ ok: false, reply: { status: 413 } });
+    expect(parseJsonBody("{" + '"a":"' + "x".repeat(300_000) + '"}')).toMatchObject({ ok: false, reply: { status: 413 } });
   });
 });

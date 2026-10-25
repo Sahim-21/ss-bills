@@ -29,14 +29,16 @@ const fail = (status: number, code: string, message: string): Reply => ({ status
 
 /** Largest request body accepted (bytes of text). Real requests are a few hundred bytes plus up to 400 daily summaries. */
 export const MAX_BODY_BYTES = 256 * 1024;
+/** The menu copy can be bigger (up to 5000 items, about 600 KB; the database caps the snapshot at 1 MB). */
+export const MENU_MAX_BODY_BYTES = 1_100_000;
 
 /**
  * Turns the raw request text into a JSON value, or an error reply. Kept here (not in the Deno wrapper) so it is tested.
  * A body that is not JSON gets its own message: the usual cause is a shell removing the quotes from the JSON before
  * it is sent (Windows PowerShell does this to `curl.exe -d '{"a":1}'`).
  */
-export function parseJsonBody(raw: string): { ok: true; body: unknown } | { ok: false; reply: Reply } {
-  if (raw.length > MAX_BODY_BYTES) return { ok: false, reply: fail(413, "bad_request", "Request too large") };
+export function parseJsonBody(raw: string, maxBytes: number = MAX_BODY_BYTES): { ok: true; body: unknown } | { ok: false; reply: Reply } {
+  if (raw.length > maxBytes) return { ok: false, reply: fail(413, "bad_request", "Request too large") };
   try {
     return { ok: true, body: JSON.parse(raw) };
   } catch {
@@ -128,4 +130,39 @@ export async function handleSync(body: unknown, ip: string, deps: Deps): Promise
     return fail(STATUS_BY_CODE[String(r.data.code)] ?? 400, String(r.data.code ?? "bad_request"), String(r.data.message ?? "Sync failed"));
   }
   return signed(r.data, key, machine, deps, { accepted: r.data.accepted });
+}
+
+/**
+ * Menu and settings copy: { action: "put", key, machineId, snapshot } or { action: "get", key, machineId }.
+ * The database decides who may do what (an activated, bound PC on a licence that is not suspended or expired) and what a copy
+ * may contain. A restore ("get") is SIGNED, exactly like a licence answer, so a fake server cannot push a menu into a restaurant.
+ */
+export async function handleMenu(body: unknown, ip: string, deps: Deps): Promise<Reply> {
+  if (!isObject(body)) return fail(400, "bad_request", "Invalid request");
+  const action = body.action;
+  const key = text(body.key, 40)?.toUpperCase() ?? null;
+  const machine = text(body.machineId, 200);
+  if ((action !== "put" && action !== "get") || !key || !machine) return fail(400, "bad_request", "Invalid request");
+  if (action === "put" && !isObject(body.snapshot)) return fail(400, "bad_request", "Invalid request");
+
+  const byIp = await limited(deps, `menu:ip:${ip}`, 300, 3600);
+  if (byIp === "error") return serverError();
+  if (!byIp) return tooMany();
+  // saving happens in the background after menu changes (a few times an hour at most); restoring is rare
+  const byKey = await limited(deps, `menu:${action}:${key}:${machine}`, action === "put" ? 60 : 10, 3600);
+  if (byKey === "error") return serverError();
+  if (!byKey) return tooMany();
+
+  const r =
+    action === "put"
+      ? await deps.rpc("license_menu_put", { p_key: key, p_machine: machine, p_snapshot: body.snapshot })
+      : await deps.rpc("license_menu_get", { p_key: key, p_machine: machine });
+  if (r.error || !isObject(r.data)) return serverError();
+  if (r.data.ok !== true) {
+    return fail(STATUS_BY_CODE[String(r.data.code)] ?? 400, String(r.data.code ?? "bad_request"), String(r.data.message ?? "Menu request failed"));
+  }
+  if (action === "put") return { status: 200, body: { ok: true, stored: r.data.stored === true, unchanged: r.data.unchanged === true } };
+  if (r.data.found !== true) return { status: 200, body: { ok: true, found: false } };
+  const payload = JSON.stringify({ v: 1, kind: "menu", key, machine, saved_at: r.data.saved_at, bytes: r.data.bytes, snapshot: r.data.content });
+  return { status: 200, body: { ok: true, found: true, payload, sig: await deps.sign(payload) } };
 }

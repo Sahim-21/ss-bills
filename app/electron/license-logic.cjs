@@ -40,9 +40,14 @@ function verifySigned(reply, publicKeyB64, expected) {
  * @returns { mode: 'ok'|'warning'|'locked', reason, message, ...details for the Licence screen }
  */
 function evaluate(stored, nowMs) {
-  const { status, lastCheckInMs, problem } = stored;
-  // A PC clock set back to extend a licence is ignored: time never runs backwards past the latest time seen.
-  const now = Math.max(nowMs, stored.lastSeenMs ?? 0);
+  const { status, problem } = stored;
+  // The time SS Bills last answered comes from INSIDE the signed answer (SS Bills' own clock), so editing the local database
+  // cannot make a check-in look more recent. A separately stored time is only a fallback for an answer without one.
+  const signedMs = status ? Date.parse(status.server_time) : NaN;
+  const lastCheckInMs = Number.isFinite(signedMs) ? signedMs : stored.lastCheckInMs;
+  // A PC clock set back to extend a licence is ignored: time never runs backwards past the latest time seen, and never
+  // before the last signed answer.
+  const now = Math.max(nowMs, stored.lastSeenMs ?? 0, Number.isFinite(signedMs) ? signedMs : 0);
 
   if (!status) return { mode: "locked", reason: "unactivated", message: "Activate SS Bills with your licence key to start billing.", activated: false };
   const base = {
@@ -95,10 +100,14 @@ function evaluate(stored, nowMs) {
   return { ...details, mode: "ok", reason: null, message: "" };
 }
 
-/** Is it time to try a sync? Every 6 hours after a good one, every 15 minutes after a failed one. */
-function shouldSync(nowMs, lastAttemptMs, lastOkMs) {
-  if (lastAttemptMs && nowMs - lastAttemptMs < 15 * 60_000) return false;
-  return !lastOkMs || nowMs - lastOkMs >= 6 * 3600_000;
+/**
+ * Is it time for the routine background sync? Hourly after a good one, 15 minutes after a failed one.
+ * (Separately, the app also syncs at start-up and at every login: see requestSync in license.cjs.)
+ */
+function shouldSync(nowMs, lastAttemptMs, lastOkMs, lastFailed = false) {
+  if (!lastAttemptMs && !lastOkMs) return true;
+  if (lastFailed) return !lastAttemptMs || nowMs - lastAttemptMs >= 15 * 60_000;
+  return !lastOkMs || nowMs - lastOkMs >= 3600_000;
 }
 
 module.exports = { verifySigned, evaluate, shouldSync, DAY_MS };

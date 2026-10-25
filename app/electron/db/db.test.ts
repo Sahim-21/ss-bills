@@ -55,8 +55,10 @@ function fresh() {
   repo.seedDemo(demo());
   return { db, repo };
 }
+const tmpDirs: string[] = [];
 afterEach(() => {
   while (openDbs.length) openDbs.pop()!.close();
+  while (tmpDirs.length) fs.rmSync(tmpDirs.pop()!, { recursive: true, force: true }); // after the databases are closed
 });
 
 const ctx = { today: "2026-10-22", fy: "2026-27", sinceDate: "2026-08-01" };
@@ -538,7 +540,9 @@ describe("PIN lockout", () => {
   });
 
   it("survives a restart (the count is saved)", () => {
-    const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "ssb-pin-")), "t.db");
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ssb-pin-"));
+    tmpDirs.push(dir);
+    const file = path.join(dir, "t.db");
     const t = Date.parse("2026-10-21T10:00:00Z");
     let db = openDatabase(file);
     let repo = createRepo(db, { now: () => t });

@@ -234,6 +234,7 @@ Built and tested (D-024 to D-029). Source: `supabase/migrations/`, how-to: [supa
 | `restaurants` | code (`CL-HYD-0001`), name, owner, phone, email, city, address, GSTIN, notes |
 | `licenses` | **one per restaurant**: key, plan, status (`active`/`suspended`), starts/expires (null = lifetime), `max_devices`, last check-in |
 | `license_devices` | terminals bound to a license by machine ID; `active = false` after a reset |
+| `menu_snapshots` | the cloud copy of a restaurant's menu and settings: newest 10 per restaurant, 1 MB cap, no access for `anon`/`authenticated` (D-043) |
 | `payments` | manual record: plan, periods, subtotal, GST, total, method, reference, period covered |
 | `daily_summary` | per restaurant per day: sales, bills, cancelled, cash/UPI/card, tax, top item (what the restaurant app uploads) |
 | `license_events` | append-only audit log (trigger blocks update/delete): who, what, when, details |
@@ -288,8 +289,10 @@ All in the Electron main process; the UI sees only `window.ssbills.license(...)`
 - `electron/machine-id.cjs`: hash of the Windows machine GUID (random id saved in `app_meta` elsewhere).
 - `electron/license.cjs`: `activate(key)`, `syncNow()`, `getStatus()`, `assertCanBill()`. The key, the last signed answer and
   times live in `app_meta`. The saved answer is **re-verified on every read**, so editing the file or copying it to another PC
-  makes it invalid. A background tick (first 10 s after start, then every 15 min) syncs when 6 h have passed since the last
-  good check-in, or 15 min after a failure. Sync uploads `daily_summary` rows (first time all; later from 2 days before the
+  makes it invalid. Check-ins (D-041): 10 s after start, at every successful login (`license("touch")`, background, never
+  blocking), and hourly while open (tick every 15 min; 15 min retry after a failure); requests within 5 min of the last attempt
+  are ignored. The time of the last check-in is the `server_time` **inside the signed answer** (not an editable setting), and the
+  clock can never run before it. Sync uploads `daily_summary` rows (first time all; later from 2 days before the
   last uploaded day, because late payments and cancellations change recent days) with each day's best-selling item.
 - `electron/license-logic.cjs` (pure, tested): status = `ok` / `warning` / `locked`. Locked when: never activated or the saved
   answer is damaged (shows the **activation screen**, before the setup wizard); the server says `suspended`; expired past
@@ -299,6 +302,20 @@ All in the Electron main process; the UI sees only `window.ssbills.license(...)`
 - `main.cjs` refuses `saveOpenBill` and `payBill` while locked; everything else (history, reports, backup, settings) stays open.
   A suspension takes effect at the next successful check-in.
 - UI: `components/activation.tsx`, Settings → License & sync, a top-bar chip when not OK, and the "Billing is paused" banner.
+
+### 7.4b Menu and settings copy (built, D-043, D-044)
+
+- **Server** (migration 8): `license_menu_put(key, machine, snapshot)` and `license_menu_get(key, machine)`, callable by the service role only. Both
+  require a known key, a PC **bound** to it, and a licence that is not suspended or expired (`menu_caller`). `put` accepts only the agreed shape
+  (`keys_within` at every level, version 1, caps 200 categories / 5000 items / 500 tables / 1 MB), skips a copy identical to the latest, and keeps
+  the newest 10. The Edge Function `menu` (`{ action: "put" | "get", key, machineId, snapshot? }`, body limit 1.1 MB, rate limits 60 saves and 10 restores an hour per PC,
+  300 requests an hour per address) signs every `get` answer like a licence answer.
+- **App**: `electron/snapshot.cjs` builds, hashes (content only, not the time) and strictly validates a copy. `license.cjs` `uploadMenu()` runs after each good
+  check-in and a minute after a menu change (`main.cjs`, debounced), sends nothing when the hash is unchanged, and never throws; `fetchMenu()` verifies the
+  signature, key, PC and `kind: "menu"`, then validates the copy. `db/index.cjs` `restoreFromSnapshot` writes everything in one transaction into an **empty** database with a new
+  Admin; `importMenuRows`/`previewMenuImport` implement the CSV import (`menu-csv.cjs`: parsing, checking, planning, export). `menu-service.cjs` is the only door: the screen
+  never supplies a file path, a menu copy or rows; previews and found copies are held in the main process and applied by token, and forgotten after 15 minutes.
+- **UI**: setup wizard panel "We found your saved menu" (`components/cloud-restore.tsx`); Settings → Backup & restore card with "Save now"; Menu screen "Import / Export" dialog (`components/menu-csv.tsx`).
 
 ### 7.5 Vendor Console (`portal/`)
 
@@ -336,6 +353,7 @@ Built (D-035), in `electron/backup.cjs`; the UI is Settings → Backup & restore
   The UI only ever names listed files (strict name pattern); it never supplies a path.
 - Off-site backup of the full database (the client's Google Drive, or our storage) is
   **(PENDING)** O-4.
+- **The central Supabase database** (vendor side) is backed up separately: see [BACKUP.md](BACKUP.md) (D-040).
 - The central `daily_summary` table is **not** a backup and can't restore bills.
 
 ## 10. Packaging, signing and updates (built, D-038, D-039)

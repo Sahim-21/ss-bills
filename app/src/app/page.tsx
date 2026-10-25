@@ -34,6 +34,9 @@ export default function LoginPage() {
       return false;
     });
     if (ok) {
+      // A good moment to check in with SS Bills (a suspension or renewal arrives this way). Fire and forget: never waits,
+      // never blocks the login, and does nothing in a browser or offline.
+      void window.ssbills?.license("touch").catch(() => {});
       dispatch({ type: "login", userId: selected.id });
       router.push("/billing/");
     } else {

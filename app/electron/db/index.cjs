@@ -5,6 +5,8 @@ const { DatabaseSync } = require("node:sqlite");
 const crypto = require("node:crypto");
 const fs = require("node:fs");
 const { MIGRATIONS } = require("./schema.cjs");
+const { validateSnapshot } = require("../snapshot.cjs");
+const { planImport } = require("../menu-csv.cjs");
 
 const BILL_PREFIX = "SSB";
 const METHODS = ["cash", "upi", "card"];
@@ -256,6 +258,18 @@ function createRepo(db, opts = {}) {
     q("INSERT INTO app_meta (key, value) VALUES ('printers', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(
       JSON.stringify({ receipt: p.receipt, kot: p.kot }),
     );
+  }
+
+  const newId = (prefix) => prefix + crypto.randomBytes(6).toString("hex");
+
+  /** The menu as it stands now (removed items and categories left out): what an import is compared against. */
+  function readCatalog() {
+    return {
+      categories: q("SELECT id, name, sort_order AS sortOrder FROM categories WHERE active = 1 ORDER BY sort_order, name").all(),
+      items: q("SELECT id, category_id AS categoryId, name, short_code AS shortCode, price_paise AS pricePaise, veg, available FROM menu_items WHERE deleted = 0")
+        .all()
+        .map((i) => ({ ...i, veg: !!i.veg, available: !!i.available })),
+    };
   }
 
   function writeCategory(c) {
@@ -550,6 +564,59 @@ function createRepo(db, opts = {}) {
         topItemName: tops.get(d.date)?.name ?? null, topItemQty: tops.get(d.date)?.qty ?? null,
       }));
     },
+
+    /**
+     * Sets up a brand-new database from a menu copy saved in the cloud: profile, GST, categories, menu and tables, plus a new
+     * Admin with a new PIN (PINs are never in a copy). Only into an empty database, in one transaction, and the copy is checked
+     * strictly first: nothing that came over the network is trusted.
+     */
+    restoreFromSnapshot({ snapshot, admin }) {
+      const v = validateSnapshot(snapshot);
+      assert(v.ok, v.ok ? "" : v.error);
+      const snap = v.snapshot;
+      return tx(() => {
+        assert(q("SELECT COUNT(*) AS n FROM users").get().n === 0, "This restaurant is already set up");
+        assert(admin && typeof admin.name === "string" && admin.name.trim(), "Admin name is required");
+        assert(/^\d{4}$/.test(admin.pin ?? ""), "The Admin PIN must be 4 digits");
+        writeProfile(snap.profile);
+        writeTax(snap.tax);
+        writeStaff({ id: admin.id ?? newId("u"), name: admin.name.trim(), role: "admin", pin: admin.pin, phone: "", active: true });
+        snap.categories.forEach((c) => writeCategory({ id: c.id, name: c.name, sortOrder: c.sortOrder, active: true }));
+        snap.tables.forEach((t) => writeTable({ id: t.id, label: t.label, seats: t.seats, active: true }));
+        snap.menu.forEach((m) => writeMenuItem({ ...m, deleted: false }));
+        return { categories: snap.categories.length, items: snap.menu.length, tables: snap.tables.length };
+      });
+    },
+
+    /** What a CSV import of `rows` would do, without changing anything (used for the preview). */
+    previewMenuImport(rows) {
+      return planImport(rows, readCatalog(), newId);
+    },
+
+    /**
+     * Applies an import of already-checked `rows` (menu-csv.cjs) in one transaction: new categories and items are added,
+     * existing ones (same category and name) are updated where something differs, and NOTHING is ever deleted.
+     */
+    importMenuRows(rows) {
+      return tx(() => {
+        const plan = planImport(rows, readCatalog(), newId);
+        assert(plan.ok, plan.ok ? "" : plan.error);
+        plan.newCategories.forEach((c) => writeCategory({ id: c.id, name: c.name, sortOrder: c.sortOrder, active: true }));
+        plan.creates.forEach((m) => writeMenuItem({ id: m.id, categoryId: m.categoryId, name: m.name, shortCode: m.shortCode, pricePaise: m.pricePaise, veg: m.veg, available: m.available, deleted: false }));
+        for (const u of plan.updates) {
+          const cur = q("SELECT category_id, name, short_code, price_paise, veg, available FROM menu_items WHERE id = ?").get(u.id);
+          writeMenuItem({
+            id: u.id, categoryId: cur.category_id, name: cur.name,
+            shortCode: u.patch.shortCode ?? cur.short_code, pricePaise: u.patch.pricePaise ?? cur.price_paise,
+            veg: u.patch.veg ?? !!cur.veg, available: u.patch.available ?? !!cur.available, deleted: false,
+          });
+        }
+        return { created: plan.creates.length, updated: plan.updates.length, unchanged: plan.unchanged, categoriesCreated: plan.newCategories.length };
+      });
+    },
+
+    /** The current menu, for a CSV export. */
+    loadCatalog: () => readCatalog(),
 
     /** Small settings store for the main process (licence, backups). NOT reachable from the UI (see main.cjs). */
     getMeta(key) {

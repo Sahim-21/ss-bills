@@ -341,7 +341,7 @@ export function EditClientDialog({ open, onClose, detail, onDone }: { open: bool
         <Field label="GSTIN" hint="Optional"><input value={f.gstin} onChange={(e) => setF({ ...f, gstin: e.target.value.toUpperCase().slice(0, 15) })} className={cx(inputClass, "font-mono")} /></Field>
         <div className="col-span-2"><Field label="Address"><input value={f.address} onChange={set("address")} className={inputClass} /></Field></div>
         <div className="col-span-2"><Field label="Internal notes" hint="Not shown to the restaurant"><textarea rows={2} value={f.notes} onChange={set("notes")} className="w-full resize-none rounded-xl bg-surface-low px-4 py-3 text-body-lg outline-none focus:bg-surface-lowest focus:ring-2 focus:ring-primary" /></Field></div>
-        <Field label="Terminals allowed" hint={`${detail.devices.filter((d) => d.active).length} linked`}>
+        <Field label="Terminals allowed" hint={f.max_devices > 1 ? <span className="text-hold-ink">Each PC keeps its own separate data: the menu is not shared and bill numbers repeat across PCs. Sell more than one only if the restaurant accepts that.</span> : `${detail.devices.filter((d) => d.active).length} linked`}>
           <input type="number" min={1} max={50} value={f.max_devices} onChange={(e) => setF({ ...f, max_devices: Number(e.target.value) })} className={cx(inputClass, "tnum")} />
         </Field>
       </div>

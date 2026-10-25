@@ -16,7 +16,9 @@ const KEY = /^[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}$/;
 
 const client = (over: Record<string, unknown> = {}) => ({
   name: "Spice Garden", owner_name: "Manish Kapoor", phone: "+91 98105 77123", email: "owner@spicegarden.in",
-  city: "Hyderabad", address: "Jubilee Hills", gstin: "36AABCS1429B1Z4", plan_id: "yearly", ...over,
+  city: "Hyderabad", address: "Jubilee Hills", gstin: "36AABCS1429B1Z4", plan_id: "yearly",
+  max_devices: 3, // plans default to ONE PC (D-042); most tests below need several, so they ask for 3 as a super admin may
+  ...over,
 });
 
 const create = (over: Record<string, unknown> = {}, who: Who = boss) =>
@@ -117,12 +119,44 @@ describe("security: who can call what", () => {
   });
 });
 
+describe("one PC per licence (D-042)", () => {
+  it("every plan allows exactly one terminal by default", async () => {
+    const plans = await q("select id, max_devices from public.plans order by id");
+    expect(plans).toEqual([
+      { id: "lifetime", max_devices: 1 },
+      { id: "monthly", max_devices: 1 },
+      { id: "yearly", max_devices: 1 },
+    ]);
+  });
+
+  it("a new client gets one terminal unless a super admin asks for more", async () => {
+    for (const plan of ["monthly", "yearly", "lifetime"]) {
+      const c = await create({ plan_id: plan, max_devices: undefined, name: `Plain ${plan}`, city: "Pune" });
+      expect(c.max_devices).toBe(1);
+    }
+  });
+
+  it("the second PC is refused with a clear message", async () => {
+    const c = await create({ max_devices: undefined });
+    expect((await activate(c.license_key, "PC-1")).ok).toBe(true);
+    expect(await activate(c.license_key, "PC-2")).toMatchObject({ ok: false, code: "device_limit" });
+  });
+
+  it("a super admin can still raise one client's limit (and support cannot)", async () => {
+    const c = await create({ max_devices: undefined });
+    await expect(rpc(db, help, "public.vendor_update_client($1, '{\"max_devices\": 2}'::jsonb)", [c.restaurant_id])).rejects.toThrow(/super admin/);
+    await rpc(db, boss, "public.vendor_update_client($1, '{\"max_devices\": 2}'::jsonb)", [c.restaurant_id]);
+    expect((await activate(c.license_key, "PC-1")).ok).toBe(true);
+    expect((await activate(c.license_key, "PC-2")).ok).toBe(true);
+  });
+});
+
 describe("onboarding a client", () => {
   it("creates the restaurant, license, key and audit entry", async () => {
     const c = await create();
     expect(c.license_key).toMatch(KEY);
     expect(c.code).toBe("CL-HYD-0001");
-    expect(c.max_devices).toBe(3); // from the yearly plan
+    expect(c.max_devices).toBe(3); // the override these tests pass (see client())
     const exp = new Date(c.expires_at).getTime() - new Date(c.starts_at).getTime();
     expect(Math.round(exp / 86_400_000)).toBe(365);
     const ev = await q("select event, actor_name from public.license_events");
@@ -274,7 +308,7 @@ describe("terminals (devices)", () => {
   });
 
   it("refuses a PC beyond the terminal limit, and a reset frees the slot", async () => {
-    const c = await create({ plan_id: "monthly" }); // 1 terminal
+    const c = await create({ plan_id: "monthly", max_devices: 1 }); // 1 terminal
     await activate(c.license_key, "PC-1");
     const blocked = await activate(c.license_key, "PC-2");
     expect(blocked).toMatchObject({ ok: false, code: "device_limit" });
@@ -571,7 +605,7 @@ describe("regenerating a licence key", () => {
   });
 
   it("a PC that was already linked re-activates with the new key without using a slot", async () => {
-    const c = await create({ plan_id: "monthly" }); // 1 terminal
+    const c = await create({ plan_id: "monthly", max_devices: 1 }); // 1 terminal
     expect((await activate(c.license_key, "PC-1")).ok).toBe(true);
     const r = await regen(c.restaurant_id);
     const again = await activate(r.license_key, "PC-1");

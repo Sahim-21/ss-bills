@@ -2,6 +2,7 @@
 // The UI can only ask for the status, activate with a key, or ask for a sync now. It never sees the network.
 // Billing must keep working offline: every network failure here is caught, remembered, and retried later.
 const { evaluate, shouldSync, verifySigned } = require("./license-logic.cjs");
+const { snapshotHash, validateSnapshot, summarize } = require("./snapshot.cjs");
 
 const KEY_RE = /^[0-9A-F]{16}$/;
 const NEEDS_ACTIVATION = new Set(["unactivated", "damaged"]);
@@ -36,6 +37,7 @@ const dateOnly = (ms, offsetDays = 0) => new Date(ms + 5.5 * 3600_000 + offsetDa
  * @param o.fetchFn         fetch (injectable for tests)
  * @param o.machineId       () => stable id of this PC
  * @param o.enforce         false = licence checks switched off (SSBILLS_LICENSE=off, for development)
+ * @param o.buildSnapshot   () => the menu-and-settings copy to keep in the cloud, or null if the PC is not set up yet
  */
 function createLicenseService(o) {
   const { meta, config } = o;
@@ -64,7 +66,16 @@ function createLicenseService(o) {
         damaged = true;
       }
     }
+    // The time of the last check-in is taken from the signed answer (see evaluate in license-logic.cjs); the plain stored
+    // value is only what is shown if an answer carries no time.
     return { key, status, damaged, lastCheckInMs: num("license_last_checkin"), lastSeenMs: num("license_last_seen"), problem: json("license_problem") };
+  }
+
+  /** When SS Bills last answered, as proven by the signed answer (0 if there is none). */
+  function lastGoodCheckIn() {
+    const s = load();
+    const t = s.status ? Date.parse(s.status.server_time) : NaN;
+    return Number.isFinite(t) ? t : s.status ? s.lastCheckInMs : 0;
   }
 
   function getStatus() {
@@ -84,6 +95,8 @@ function createLicenseService(o) {
       lastAttemptAt: num("license_last_attempt") ? new Date(num("license_last_attempt")).toISOString() : null,
       lastError: meta.get("license_last_error") || null,
       lastSyncedDate: meta.get("license_synced_date") || null,
+      menuSavedAt: num("menu_uploaded_at") ? new Date(num("menu_uploaded_at")).toISOString() : null,
+      menuError: meta.get("menu_last_error") || null,
     };
   }
 
@@ -124,7 +137,57 @@ function createLicenseService(o) {
     meta.set("license_problem", null);
     meta.set("license_last_error", null);
     meta.set("license_synced_date", null); // a fresh activation uploads the whole history once
+    meta.set("menu_uploaded_hash", null); // ...and the menu copy
     return getStatus();
+  }
+
+  /**
+   * Keep the cloud copy of the menu and settings up to date. Runs after each good check-in, and a minute after the menu is
+   * changed (main.cjs). Sends nothing when the menu has not changed since the last successful upload. Never throws: a failure is
+   * remembered for the Backup screen and retried at the next check-in. Billing never waits for it.
+   */
+  async function uploadMenu() {
+    if (o.enforce === false || !o.buildSnapshot) return { ok: true, skipped: true };
+    const key = meta.get("license_key");
+    if (!key) return { ok: false, message: "Not activated" };
+    try {
+      const snapshot = o.buildSnapshot();
+      if (!snapshot) return { ok: true, skipped: true }; // not set up yet: nothing to save
+      const checked = validateSnapshot(snapshot);
+      if (!checked.ok) throw new Error(`The menu could not be saved: ${checked.error}`);
+      const hash = snapshotHash(checked.snapshot);
+      if (hash === meta.get("menu_uploaded_hash")) return { ok: true, unchanged: true };
+      const reply = await post("menu", { action: "put", key, machineId: o.machineId(), snapshot: checked.snapshot });
+      if (reply.ok !== true) throw new Error(refusal(reply));
+      meta.set("menu_uploaded_hash", hash);
+      meta.set("menu_uploaded_at", String(now()));
+      meta.set("menu_last_error", null);
+      return { ok: true, stored: reply.stored === true };
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      meta.set("menu_last_error", message);
+      return { ok: false, message };
+    }
+  }
+
+  /**
+   * Download the saved menu copy for a restore on a new PC. The answer is signed by SS Bills (same check as a licence answer)
+   * and the copy itself is checked field by field before anything is used. Throws a plain-language Error on any problem.
+   * @returns { found: false } or { found: true, snapshot, savedAt, summary }
+   */
+  async function fetchMenu() {
+    if (o.enforce === false) throw new Error("Licence checks are switched off on this copy");
+    const key = meta.get("license_key");
+    if (!key) throw new Error("Activate SS Bills with your licence key first");
+    const machine = o.machineId();
+    const reply = await post("menu", { action: "get", key, machineId: machine });
+    if (reply.ok !== true) throw new Error(refusal(reply));
+    if (reply.found === false) return { found: false };
+    const payload = verifySigned(reply, config.publicKey, { key, machine });
+    if (payload.kind !== "menu") throw new Error("The server's answer was not a menu copy");
+    const checked = validateSnapshot(payload.snapshot);
+    if (!checked.ok) throw new Error(checked.error);
+    return { found: true, snapshot: checked.snapshot, savedAt: payload.saved_at ?? null, summary: summarize(checked.snapshot, payload.saved_at) };
   }
 
   let syncing = null;
@@ -153,6 +216,7 @@ function createLicenseService(o) {
         meta.set("license_problem", null);
         meta.set("license_last_error", null);
         if (summaries.length > 0) meta.set("license_synced_date", summaries[summaries.length - 1].date);
+        await uploadMenu(); // never throws, and never affects the result of the licence check-in
         return { ok: true, accepted: summaries.length };
       } catch (e) {
         const message = e instanceof Error ? e.message : String(e);
@@ -171,12 +235,24 @@ function createLicenseService(o) {
     if (s.mode === "locked") throw new Error(`Billing is paused. ${s.message}`);
   }
 
-  /** Background check: first one shortly after start, then every 15 minutes it asks whether a sync is due. */
+  /**
+   * Sync in the background because something happened that is a good moment to check in (the app started, someone logged in).
+   * It never waits and never blocks anything: billing must work with no internet. To avoid hammering the server, a request is
+   * ignored when a sync is already running or the last attempt was less than 5 minutes ago. Returns true if one was started.
+   */
+  function requestSync() {
+    if (o.enforce === false || !meta.get("license_key") || syncing) return false;
+    if (now() - num("license_last_attempt") < 5 * 60_000) return false;
+    void syncNow();
+    return true;
+  }
+
+  /** Background checks: one shortly after start, then every 15 minutes it asks whether the routine (hourly) sync is due. */
   function start() {
     const tick = () => {
-      if (getStatus().activated && shouldSync(now(), num("license_last_attempt"), num("license_last_checkin"))) void syncNow();
+      if (getStatus().activated && shouldSync(now(), num("license_last_attempt"), lastGoodCheckIn(), !!meta.get("license_last_error"))) void syncNow();
     };
-    const first = setTimeout(tick, 10_000);
+    const first = setTimeout(() => void requestSync(), 10_000);
     const every = setInterval(tick, 15 * 60_000);
     first.unref?.();
     every.unref?.();
@@ -186,7 +262,7 @@ function createLicenseService(o) {
     };
   }
 
-  return { getStatus, activate, syncNow, assertCanBill, start };
+  return { getStatus, activate, syncNow, requestSync, uploadMenu, fetchMenu, assertCanBill, start };
 }
 
 module.exports = { createLicenseService, normalizeKey };

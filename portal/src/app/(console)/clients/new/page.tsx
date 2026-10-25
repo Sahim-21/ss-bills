@@ -141,7 +141,7 @@ export default function NewClientPage() {
 
             <div className="grid grid-cols-3 gap-4">
               <Field label="License starts"><input type="date" value={startsOn} onChange={(e) => setStartsOn(e.target.value)} className={inputClass} /></Field>
-              <Field label="Terminals allowed">
+              <Field label="Terminals allowed" hint={terminals > 1 ? <span className="text-hold-ink">Each PC keeps its own separate data: the menu is not shared and bill numbers repeat across PCs. Sell more than one only if the restaurant accepts that.</span> : "One PC per licence"}>
                 <div className="flex h-12 items-center rounded-xl bg-surface-low">
                   <button type="button" aria-label="Fewer terminals" onClick={() => setDevices(Math.max(1, terminals - 1))} className="flex h-12 w-12 items-center justify-center rounded-xl hover:bg-surface-high"><Icon name="remove" /></button>
                   <span className="tnum flex-1 text-center text-headline-sm">{terminals}</span>

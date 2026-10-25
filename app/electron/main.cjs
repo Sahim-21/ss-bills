@@ -12,6 +12,8 @@ const { createLicenseService } = require("./license.cjs");
 const { createBackupService } = require("./backup.cjs");
 const { createMachineId } = require("./machine-id.cjs");
 const { createUpdates } = require("./updates.cjs");
+const { createMenuService } = require("./menu-service.cjs");
+const { buildSnapshot } = require("./snapshot.cjs");
 const { MIGRATIONS } = require("./db/schema.cjs");
 const licenseConfig = require("./license-config.json");
 
@@ -25,6 +27,9 @@ const DB_METHODS = new Set([
   "upsertStaff", "setTax", "setProfile", "payBill", "cancelBill", "verifyPin",
 ]);
 
+// Calls that change the menu or the settings kept in the cloud copy: after one of these the copy is saved a minute later.
+const MENU_CALLS = new Set(["upsertMenuItem", "upsertCategory", "upsertTable", "setTax", "setProfile", "completeSetup"]);
+
 // Calls that create or change a bill are refused while the licence is locked (TRD §7.4).
 // History, reports, backup and settings stay available.
 const BILLING_CALLS = new Set(["saveOpenBill", "payBill"]);
@@ -36,6 +41,8 @@ let repo = null;
 let license = null;
 let backups = null;
 let updates = null;
+let menuService = null;
+let menuTimer = null;
 let stopBackground = () => {};
 
 /** SSBILLS_DB overrides the location (used for testing); default is the per-user app data folder. */
@@ -143,6 +150,23 @@ Your data has not been changed.`);
     deviceName: () => require("node:os").hostname(),
     appVersion: app.getVersion(),
     enforce: app.isPackaged || process.env.SSBILLS_LICENSE !== "off",
+    buildSnapshot: () => (db ? buildSnapshot(db) : null), // the menu and settings copy kept in the cloud (D-043)
+  });
+  // Save the menu copy a minute after the last change (so a burst of edits is one upload). Never blocks anything.
+  const scheduleMenuUpload = () => {
+    clearTimeout(menuTimer);
+    menuTimer = setTimeout(() => void license.uploadMenu(), 60_000);
+    menuTimer.unref?.();
+  };
+  menuService = createMenuService({
+    getRepo: () => repo,
+    getDb: () => db,
+    license,
+    dialog,
+    fs,
+    path,
+    documentsDir: () => app.getPath("documents"),
+    onMenuChanged: scheduleMenuUpload,
   });
   backups = createBackupService({
     getDb: () => db,
@@ -154,7 +178,16 @@ Your data has not been changed.`);
     if (!isOurPage(event.senderFrame)) throw new Error("Blocked: request did not come from the app");
     if (!DB_METHODS.has(name)) throw new Error(`Unknown database call: ${name}`);
     if (BILLING_CALLS.has(name)) license.assertCanBill();
-    return repo[name](arg);
+    const out = repo[name](arg);
+    if (MENU_CALLS.has(name)) scheduleMenuUpload();
+    return out;
+  });
+
+  // Menu extras: restore the cloud copy on a new PC, save it now, CSV import and export. Files are chosen in system dialogs
+  // opened by the app; the screen never supplies a path, a menu copy or rows to write (see menu-service.cjs).
+  ipcMain.handle("menu", async (event, name, arg) => {
+    if (!isOurPage(event.senderFrame)) throw new Error("Blocked: request did not come from the app");
+    return menuService.call(name, arg, BrowserWindow.fromWebContents(event.sender));
   });
 
   // Updates: only for installed apps, and only when an update folder is configured (license-config.json "updateUrl").
@@ -177,6 +210,10 @@ Your data has not been changed.`);
         return license.getStatus();
       case "activate":
         return license.activate(arg?.key);
+      case "touch":
+        // Called when someone logs in: start a background sync if one is due, and answer at once with the current status.
+        license.requestSync();
+        return license.getStatus();
       case "syncNow": {
         const r = await license.syncNow();
         return { ...r, status: license.getStatus() };
@@ -284,6 +321,7 @@ Your data has not been changed.`);
   const backupTimer = setInterval(autoBackup, 60 * 60_000);
   backupTimer.unref?.();
   stopBackground = () => {
+    clearTimeout(menuTimer);
     stopLicense();
     stopUpdates();
     clearInterval(backupTimer);

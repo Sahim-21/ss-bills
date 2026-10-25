@@ -11,7 +11,12 @@ const status = (over: Record<string, unknown> = {}) => ({
   restaurant_code: "CL-HYD-0001", state: "active", expires_at: new Date(T0 + 200 * DAY_MS).toISOString(), max_devices: 3,
   devices_used: 1, grace_days: 7, suspended_reason: null, server_time: new Date(T0).toISOString(), ...over,
 });
-const at = (stored: Record<string, unknown>, daysLater = 0) => evaluate({ lastCheckInMs: T0, lastSeenMs: 0, problem: null, ...stored }, T0 + daysLater * DAY_MS);
+// The last check-in time is the `server_time` INSIDE the signed status, so a test sets it there (via `lastCheckInMs`).
+const at = (stored: Record<string, unknown>, daysLater = 0) => {
+  const { lastCheckInMs, ...rest } = stored as { lastCheckInMs?: number; status?: Record<string, unknown> | null };
+  const signedStatus = rest.status ? { ...rest.status, server_time: new Date(lastCheckInMs ?? T0).toISOString() } : rest.status;
+  return evaluate({ lastSeenMs: 0, problem: null, ...rest, status: signedStatus }, T0 + daysLater * DAY_MS);
+};
 
 describe("evaluate", () => {
   it("is locked until activated", () => {
@@ -67,18 +72,41 @@ describe("evaluate", () => {
     expect(evaluate({ status: s, lastCheckInMs: T0, lastSeenMs: T0 + 10 * DAY_MS, problem: null }, T0 + 1 * DAY_MS)).toMatchObject({ mode: "locked", reason: "offline" });
   });
 
-  it("treats a missing check-in time as 'never reached the server'", () => {
-    expect(evaluate({ status: status(), lastCheckInMs: 0, lastSeenMs: 0, problem: null }, T0)).toMatchObject({ mode: "locked", reason: "offline" });
+  it("treats an answer with no usable time, and no stored time, as 'never reached the server'", () => {
+    expect(evaluate({ status: status({ server_time: "" }), lastCheckInMs: 0, lastSeenMs: 0, problem: null }, T0)).toMatchObject({ mode: "locked", reason: "offline" });
+  });
+
+  it("uses the time inside the signed answer, so editing the stored check-in time changes nothing", () => {
+    // 9 days after the last real answer, someone edits the stored "last check-in" to look like it was just now
+    const edited = evaluate({ status: status(), lastCheckInMs: T0 + 9 * DAY_MS, lastSeenMs: 0, problem: null }, T0 + 9 * DAY_MS);
+    expect(edited).toMatchObject({ mode: "locked", reason: "offline", offlineDays: 9 });
+  });
+
+  it("never lets the clock run before the last signed answer", () => {
+    // the answer is from day 3; the PC clock says day 1 and the remembered 'latest time seen' was wiped
+    const r = evaluate({ status: status({ server_time: new Date(T0 + 3 * DAY_MS).toISOString() }), lastCheckInMs: 0, lastSeenMs: 0, problem: null }, T0 + 1 * DAY_MS);
+    expect(r.offlineDays).toBe(0); // measured from the signed time, never negative
+    expect(r.daysLeft).toBe(197); // 200 days left, counted from day 3
   });
 });
 
-describe("shouldSync", () => {
-  it("syncs when never done, every 6 hours after a good one, every 15 minutes after a failure", () => {
+describe("shouldSync (the routine background sync)", () => {
+  const H = 3600_000;
+  it("syncs at once when it has never been done", () => {
     expect(shouldSync(T0, 0, 0)).toBe(true);
-    expect(shouldSync(T0, T0 - 3600_000, T0 - 3600_000)).toBe(false); // synced an hour ago
-    expect(shouldSync(T0, T0 - 6 * 3600_000, T0 - 6 * 3600_000)).toBe(true);
-    expect(shouldSync(T0, T0 - 10 * 60_000, T0 - 7 * 3600_000)).toBe(false); // failed 10 minutes ago
-    expect(shouldSync(T0, T0 - 16 * 60_000, T0 - 7 * 3600_000)).toBe(true);
+  });
+
+  it("after a good sync, waits an hour", () => {
+    expect(shouldSync(T0, T0 - 10 * 60_000, T0 - 10 * 60_000)).toBe(false);
+    expect(shouldSync(T0, T0 - 59 * 60_000, T0 - 59 * 60_000)).toBe(false);
+    expect(shouldSync(T0, T0 - H, T0 - H)).toBe(true);
+    expect(shouldSync(T0, T0 - 5 * H, T0 - 5 * H)).toBe(true);
+  });
+
+  it("after a failed attempt, retries after 15 minutes however recent the last good sync was", () => {
+    expect(shouldSync(T0, T0 - 10 * 60_000, T0 - 20 * 60_000, true)).toBe(false); // failed 10 minutes ago
+    expect(shouldSync(T0, T0 - 16 * 60_000, T0 - 20 * 60_000, true)).toBe(true);
+    expect(shouldSync(T0, T0 - 16 * 60_000, 0, true)).toBe(true); // never succeeded, failed 16 minutes ago
   });
 });
 

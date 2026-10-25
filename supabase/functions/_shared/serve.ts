@@ -26,18 +26,19 @@ async function getDeps(): Promise<Deps> {
   return deps;
 }
 
-export function serve(handle: (body: unknown, ip: string, deps: Deps) => Promise<Reply>) {
+export function serve(handle: (body: unknown, ip: string, deps: Deps) => Promise<Reply>, opts: { maxBytes?: number } = {}) {
+  const maxBytes = opts.maxBytes ?? MAX_BODY_BYTES;
   Deno.serve(async (req) => {
     if (req.method !== "POST") return json(405, { ok: false, code: "bad_request", message: "Use POST" });
     const length = Number(req.headers.get("content-length") ?? "0");
-    if (length > MAX_BODY_BYTES) return json(413, { ok: false, code: "bad_request", message: "Request too large" });
+    if (length > maxBytes) return json(413, { ok: false, code: "bad_request", message: "Request too large" });
     let raw: string;
     try {
       raw = await req.text();
     } catch {
       return json(400, { ok: false, code: "bad_request", message: "The request body could not be read" });
     }
-    const parsed = parseJsonBody(raw);
+    const parsed = parseJsonBody(raw, maxBytes);
     if (!parsed.ok) return json(parsed.reply.status, parsed.reply.body);
     const body = parsed.body;
     const ip = (req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for") ?? "unknown").split(",")[0].trim().slice(0, 64);

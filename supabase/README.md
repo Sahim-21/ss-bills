@@ -12,11 +12,14 @@ summaries only**. Restaurants' bills never leave their PCs. See [docs/TRD.md](..
 | `migrations/…0003_vendor_reports.sql` | Everything the portal **reads** (overview, clients, licenses, insights, activity) |
 | `migrations/…0004_device_api.sql` | `license_activate` and `license_checkin`, called by the restaurant app through Edge Functions |
 | `migrations/…0005_security.sql` | Row level security and grants. Locks everything down |
+| `migrations/…0008_menu_snapshots_one_pc.sql` | One terminal per plan; `menu_snapshots` and `license_menu_put` / `license_menu_get` (cloud copy of the menu) |
 | `migrations/…0007_regenerate_key.sql` | `vendor_regenerate_key`: replace a client's licence key (super admin) |
 | `migrations/…0006_rate_limit.sql` | `rate_limits` table and `rate_limit_hit()` for the Edge Functions |
-| `functions/activate`, `functions/sync` | Edge Functions the restaurant app calls (shared code in `functions/_shared`) |
+| `functions/activate`, `functions/sync`, `functions/menu` | Edge Functions the restaurant app calls (shared code in `functions/_shared`) |
 | `config.toml` | Turns the platform JWT check off for those two functions (see D-032) |
 | `scripts/make-signing-key.mjs` | Creates the key pair that signs licence answers |
+| `scripts/backup.ps1` | Read-only backup of the central database to files on this PC (see [docs/BACKUP.md](../docs/BACKUP.md)) |
+| `scripts/restore-test.ps1` | Proves a backup restores, in a throw-away local Postgres. Never touches Supabase |
 
 ## How access works (read this before changing anything)
 
@@ -64,7 +67,7 @@ You need the [Supabase CLI](https://supabase.com/docs/guides/cli) (`npx supabase
    `npx supabase secrets set LICENSE_SIGNING_KEY="$(cat supabase/.secrets/license-signing.key)"`
    (or Dashboard → Edge Functions → Secrets, name `LICENSE_SIGNING_KEY`). Supabase supplies `SUPABASE_URL` and
    `SUPABASE_SERVICE_ROLE_KEY` to functions by itself.
-5. Deploy: `npx supabase functions deploy activate` and `npx supabase functions deploy sync` (the `verify_jwt = false` setting
+5. Deploy: `npx supabase functions deploy activate`, `sync` and `menu` (one command each; the `verify_jwt = false` setting
    comes from `config.toml`; if you deploy another way, pass `--no-verify-jwt`).
 6. Check: in the portal create a client, copy its licence key, start the restaurant app with `SSBILLS_DB` pointing at a new
    file (to get the activation screen), activate, and watch the PC appear under the client's terminals.

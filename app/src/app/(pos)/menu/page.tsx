@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { MenuCsvTools } from "@/components/menu-csv";
 import { AdminOnly, Badge, Button, Card, EmptyState, Field, Icon, Modal, SearchInput, Segmented, Toggle, VegMark, cx, inputClass } from "@/components/ui";
 import { formatINRShort, rupeesToPaise } from "@/lib/money";
 import { usePos } from "@/lib/pos-store";
 import type { MenuItem } from "@/lib/types";
 
 export default function MenuPage() {
-  const { state, dispatch, isAdmin, categories } = usePos();
+  const { state, dispatch, isAdmin, categories, reloadCatalog } = usePos();
   const [pickedId, setCategoryId] = useState(categories[0]?.id ?? "");
   // If the picked category was removed (or none was picked yet), fall back to the first one.
   const categoryId = categories.some((c) => c.id === pickedId) ? pickedId : (categories[0]?.id ?? "");
@@ -56,6 +57,7 @@ export default function MenuPage() {
         </div>
         <div className="flex items-center gap-3">
           <SearchInput className="w-[340px]" value={query} onChange={setQuery} placeholder="Search all items by name or code…" />
+          <MenuCsvTools onChanged={reloadCatalog} />
           <Button variant="primary" icon="add" onClick={() => setEditing(blank())}>
             Add item
           </Button>
